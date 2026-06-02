@@ -1,0 +1,444 @@
+/* WorkBenchMark project page — custom overrides on top of Bulma */
+
+/* ---------- brand palette (single source of truth) ---------- */
+:root {
+  --brand: #0b69c7;       /* LEGO blue — matches the logo */
+  --brand-dark: #08518f;
+  --brand-soft: #e7f0fb;
+  --lego-red: #e0000a;
+  --lego-green: #00963a;
+  --lego-yellow: #e0a800;
+}
+/* unify accents with the brand colour (Bulma defaults are off-brand) */
+a:not(.button) { color: var(--brand); }
+a:not(.button):hover { color: var(--brand-dark); }
+.has-text-link { color: var(--brand) !important; }
+.button.is-primary { background-color: var(--brand); }
+.button.is-primary:hover, .button.is-primary:focus { background-color: var(--brand-dark); }
+.button.is-link { background-color: var(--brand); }
+.button.is-link:hover, .button.is-link:focus { background-color: var(--brand-dark); }
+.tag.is-link.is-light { background-color: var(--brand-soft); color: var(--brand-dark); }
+
+html { scroll-behavior: smooth; }
+/* offset anchors so the fixed navbar doesn't cover section headings */
+section[id] { scroll-margin-top: 4rem; }
+
+body { padding-top: 3.25rem; }
+
+.wbm-navbar {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------- logo / wordmark ---------- */
+.wbm-wordmark {
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+/* LEGO-brick colours, all legible on a light background */
+.wbm-wordmark .c-blue   { color: var(--brand); }
+.wbm-wordmark .c-red    { color: var(--lego-red); }
+.wbm-wordmark .c-green  { color: var(--lego-green); }
+.wbm-wordmark .c-yellow { color: var(--lego-yellow); }
+
+/* navbar brand lockup */
+.wbm-brand { gap: 0.5rem; }
+.wbm-brand-mark { height: 1.6rem; width: auto; }
+.wbm-wordmark-sm { font-size: 0.72rem; }
+@media (max-width: 420px) {
+  /* keep the brand from overflowing on very narrow screens */
+  .wbm-wordmark-sm { font-size: 0.6rem; }
+}
+
+/* hero lockup */
+.wbm-hero-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+}
+.wbm-hero-mark {
+  height: clamp(3rem, 9vw, 4.5rem);
+  width: auto;
+  image-rendering: pixelated;
+}
+.wbm-hero-logo .wbm-wordmark {
+  font-size: clamp(1.15rem, 4.6vw, 2.4rem);
+}
+
+/* ---------- hero ---------- */
+.wbm-hero {
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+}
+.publication-title { letter-spacing: -0.5px; }
+.publication-authors .author-block { white-space: nowrap; margin: 0 0.15rem; }
+.publication-authors a { color: inherit; border-bottom: 1px solid transparent; }
+.publication-authors a:hover { border-bottom-color: currentColor; }
+
+.wbm-links .button { margin: 0.25rem; }
+
+/* ---------- teaser / result video ---------- */
+.wbm-teaser {
+  max-width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.wbm-teaser video {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  background: #f0f0f0;
+  display: block;
+}
+
+/* ---------- stats ---------- */
+.wbm-stats .title { color: var(--brand); margin-bottom: 0.25rem; }
+.wbm-stats .heading { letter-spacing: 0.05em; }
+
+/* ---------- tier cards ---------- */
+.wbm-tier {
+  height: 100%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.wbm-tier:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+}
+.wbm-tier .card-image img {
+  object-fit: contain;
+  background: #fff;
+  max-height: 280px;
+  width: 100%;
+}
+
+/* ---------- hero 3D assembly animation (pure HTML/CSS/JS) ---------- */
+.wbm-anim-wrap {
+  display: flex;
+  justify-content: center;
+  height: 260px;
+  overflow: hidden;
+}
+.wbm3d-stage {
+  position: relative;
+  width: 560px;
+  height: 260px;
+  perspective: 1150px;
+  transform-origin: top center;
+}
+.wbm-anim-label {
+  position: absolute;
+  top: 4px;
+  z-index: 2;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c2c2c2;
+  font-weight: 700;
+}
+.wbm-anim-label-l { left: 8px; }
+.wbm-anim-label-r { right: 8px; }
+
+/* tilted 3D world; the assembled structure sits on the right, under the TARGET label */
+.wbm3d-world {
+  position: absolute;
+  left: 72%;
+  top: 60%;
+  transform-style: preserve-3d;
+  transform: rotateX(15deg) rotateY(-26deg);
+}
+
+.wbm3d-brick {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.wbm3d-face {
+  position: absolute;
+  left: 0;
+  top: 0;
+  /* faces are centred on the brick origin via negative margins, then rotated + pushed out */
+}
+.f-front, .f-back  { width: var(--w); height: var(--h); margin-left: calc(-1 * var(--hw)); margin-top: calc(-1 * var(--hh)); }
+.f-right, .f-left  { width: var(--d); height: var(--h); margin-left: calc(-1 * var(--hd)); margin-top: calc(-1 * var(--hh)); }
+.f-top, .f-bottom  { width: var(--w); height: var(--d); margin-left: calc(-1 * var(--hw)); margin-top: calc(-1 * var(--hd)); }
+.f-front  { transform: translateZ(var(--hd));                 background: var(--c-front); }
+.f-back   { transform: rotateY(180deg) translateZ(var(--hd)); background: var(--c-front); }
+.f-right  { transform: rotateY(90deg)  translateZ(var(--hw)); background: var(--c-side); }
+.f-left   { transform: rotateY(-90deg) translateZ(var(--hw)); background: var(--c-side); }
+.f-top    { transform: rotateX(-90deg) translateZ(var(--hh)); background: var(--c-top); }
+.f-bottom { transform: rotateX(90deg)  translateZ(var(--hh)); background: var(--c-side); }
+
+/* studs sit on the top face (flat, but clearly raised via shading) */
+.wbm3d-stud {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--c-stud);
+  box-shadow: inset 0 0 0 1.4px rgba(0, 0, 0, 0.16), 0 1px 1.5px rgba(0, 0, 0, 0.22);
+}
+
+/* greyed-out target ghost reuses the same faces with muted colours */
+.wbm3d-ghost { opacity: 0.9; }
+
+@media (max-width: 600px) {
+  .wbm-anim-wrap { height: 180px; }
+  .wbm3d-stage { transform: scale(0.62); }
+}
+
+/* ---------- dataset explorer (live, auto-rotating 3D) ---------- */
+.wbm-explorer-stage {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  height: 320px;
+  margin: 0 auto;
+  perspective: 1000px;
+}
+.wbm-explorer-tilt {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  transform-style: preserve-3d;
+  transform: rotateX(-32deg); /* negative tilt = look DOWN at the tops (Y points down in CSS) */
+}
+.wbm-explorer-spin {
+  transform-style: preserve-3d;
+  animation: wbm-spin 18s linear infinite;
+}
+@keyframes wbm-spin {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wbm-explorer-spin { animation: none; transform: rotateY(35deg); }
+}
+
+/* example selector dots */
+.wbm-explorer-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.wbm-explorer-dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border-radius: 50%;
+  border: none;
+  background: #d4d8de;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.wbm-explorer-dot:hover { background: #b5bcc6; }
+.wbm-explorer-dot.is-active { background: var(--brand); transform: scale(1.25); }
+.wbm-version { margin-top: 0.75rem; opacity: 0.7; }
+
+/* ---------- task flow (initial -> final) ---------- */
+.wbm-task-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.wbm-task-flow .image { flex: 1 1 0; min-width: 240px; max-width: 420px; }
+.wbm-task-flow .image img {
+  width: 100%;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 8px;
+  max-height: 360px;
+}
+.wbm-arrow { color: var(--brand); flex: 0 0 auto; }
+@media (max-width: 640px) {
+  .wbm-arrow { transform: rotate(90deg); }
+}
+
+/* ---------- baseline pipeline diagram (built in HTML/CSS) ---------- */
+.wbm-pipeline {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+  padding: 0.5rem 0;
+}
+.wbm-pipe-io {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.wbm-pipe-io code {
+  background: #f0f1f4;
+  color: #444;
+  border-radius: 6px;
+  padding: 0.15rem 0.4rem;
+  font-size: 0.78rem;
+}
+.wbm-pipe-io small { color: #9a9a9a; font-size: 0.7rem; margin-top: 0.15rem; }
+
+.wbm-pipe-stage {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 210px;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-top: 3px solid var(--brand);
+  border-radius: 12px;
+  padding: 1rem 0.75rem 0.9rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+.wbm-pipe-stage.wbm-s1 { border-top-color: var(--brand); }
+.wbm-pipe-stage.wbm-s2 { border-top-color: var(--lego-red); }
+.wbm-pipe-stage.wbm-s3 { border-top-color: var(--lego-green); }
+.wbm-pipe-num {
+  position: absolute;
+  top: -0.7rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1.4rem;
+  height: 1.4rem;
+  line-height: 1.4rem;
+  border-radius: 50%;
+  background: #363636;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.wbm-pipe-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.2rem; }
+.wbm-pipe-sub { font-size: 0.78rem; color: #7a7a7a; line-height: 1.25; }
+
+.wbm-pipe-conn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  color: #b5b5b5;
+  flex: 0 0 auto;
+  padding: 0 0.1rem;
+}
+.wbm-pipe-conn code {
+  background: transparent;
+  color: #7a7a7a;
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+.wbm-pipe-conn .fa-arrow-right { font-size: 1rem; }
+
+@media (max-width: 768px) {
+  .wbm-pipeline { flex-direction: column; align-items: center; gap: 0.4rem; }
+  .wbm-pipe-stage { max-width: 320px; width: 100%; }
+  .wbm-pipe-conn .fa-arrow-right { transform: rotate(90deg); }
+}
+
+/* ---------- simulation environment feature blocks ---------- */
+.wbm-feature {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+.wbm-feature .icon { margin-top: 0.2rem; flex: 0 0 auto; }
+.wbm-feature p { margin: 0; font-size: 0.95rem; }
+
+/* ---------- leaderboard: metric guide ---------- */
+.wbm-dir { color: var(--brand); font-weight: 700; }
+.wbm-metric-card {
+  height: 100%;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  padding: 0.75rem 0.85rem;
+}
+.wbm-mc-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem; }
+.wbm-mc-unit { color: #b5b5b5; font-weight: 400; font-size: 0.8rem; }
+.wbm-mc-def { font-size: 0.78rem; color: #7a7a7a; line-height: 1.3; }
+.wbm-metric-card.wbm-timed { border-color: #f0d9a8; background: #fffdf6; }
+.wbm-mc-caveat {
+  font-size: 0.72rem;
+  color: #b07d12;
+  line-height: 1.25;
+  margin-top: 0.45rem;
+}
+.wbm-mc-caveat .icon { width: 1em; height: 1em; margin-right: 0.15rem; vertical-align: -0.1em; }
+.wbm-warn-text { color: #b07d12; }
+.wbm-warn-text .icon { width: 1em; height: 1em; vertical-align: -0.1em; }
+
+/* ---------- leaderboard: ranked table ---------- */
+.wbm-lb { background: transparent; font-variant-numeric: tabular-nums; }
+.wbm-lb thead th {
+  border-bottom: 2px solid #dbdbdb;
+  vertical-align: bottom;
+  color: #363636;
+  white-space: nowrap;
+}
+.wbm-lb .wbm-unit { font-weight: 400; font-size: 0.72rem; color: #b5b5b5; }
+.wbm-lb th.wbm-sortable { cursor: pointer; user-select: none; }
+.wbm-lb th.wbm-sortable:hover { background: rgba(11, 105, 199, 0.08); }
+.wbm-lb th.is-sorted { color: var(--brand); border-bottom-color: var(--brand); }
+.wbm-lb td.is-sorted { background: rgba(11, 105, 199, 0.05); }
+.wbm-lb .wbm-rank { width: 2.5rem; text-align: center; color: #7a7a7a; }
+.wbm-lb .wbm-method { min-width: 9.5rem; }
+.wbm-lb .wbm-method-name { font-weight: 600; white-space: nowrap; }
+.wbm-lb .wbm-method a { color: var(--brand); }
+.wbm-lb .wbm-method-note { font-weight: 400; font-size: 0.75rem; color: #7a7a7a; }
+.wbm-lb tr.method-ours { background: rgba(11, 105, 199, 0.06); }
+
+/* each metric cell: 4 small per-tier values stacked above a prominent Overall */
+.wbm-lb td.wbm-cell { text-align: right; vertical-align: middle; white-space: nowrap; }
+.wbm-lb td.wbm-cell.is-sorted { background: rgba(11, 105, 199, 0.05); }
+.wbm-tiers {
+  display: block;
+  font-size: 0.72rem;
+  color: #9a9a9a;
+  line-height: 1.2;
+}
+.wbm-tiers span.wbm-best-tier { font-weight: 700; color: #5a5a5a; }
+.wbm-sep { font-style: normal; color: #d0d0d0; margin: 0 0.28em; }
+.wbm-overall {
+  display: block;
+  font-size: 1.02rem;
+  font-weight: 700;
+  margin-top: 1px;
+}
+.wbm-overall.best { color: var(--brand); }
+/* key shown in the caption/legend */
+.wbm-tier-key { font-variant-numeric: tabular-nums; color: #9a9a9a; font-size: 0.85em; }
+
+/* ---------- real-robot track table ---------- */
+.wbm-realrobot { background: transparent; font-variant-numeric: tabular-nums; }
+.wbm-realrobot thead th { border-bottom: 2px solid #dbdbdb; color: #363636; white-space: nowrap; }
+.wbm-realrobot .wbm-pct { color: #7a7a7a; font-size: 0.85em; }
+.wbm-realrobot tr.wbm-na, .wbm-realrobot tr.wbm-na th { color: #b5b5b5; }
+.wbm-ack { max-width: 680px; margin-left: auto; margin-right: auto; }
+
+
+/* ---------- bibtex ---------- */
+.wbm-bibtex-wrap { position: relative; }
+.wbm-copy-btn { position: absolute; top: 0.6rem; right: 0.6rem; z-index: 2; }
+#bibtex { padding-top: 2.6rem; }
+
+pre { border-radius: 8px; }
+
+/* ---------- FAQ ---------- */
+.wbm-faq {
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 0.5rem;
+  background: #fff;
+}
+.wbm-faq summary { cursor: pointer; font-weight: 600; }
+.wbm-faq p { margin-top: 0.4rem; margin-bottom: 0; }

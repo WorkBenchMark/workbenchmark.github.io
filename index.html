@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WorkBenchMark &mdash; A LEGO-Based Assembly Benchmark</title>
+  <meta name="description" content="WorkBenchMark: a LEGO Duplo-based robotic assembly benchmark with an open-vocabulary Assembly-by-Disassembly baseline, motivated by the RoboCup Smart Manufacturing League.">
+
+  <!-- Open Graph / social preview -->
+  <meta property="og:title" content="WorkBenchMark: A LEGO-Based Assembly Benchmark">
+  <meta property="og:description" content="400 robotic assembly tasks across four complexity tiers, with a reproducible simulation environment and an Assembly-by-Disassembly baseline.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="static/images/workspace.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="WorkBenchMark: A LEGO-Based Assembly Benchmark">
+  <meta name="twitter:description" content="400 robotic assembly tasks across four complexity tiers, with a simulation environment and an Assembly-by-Disassembly baseline.">
+  <meta name="twitter:image" content="static/images/workspace.png">
+
+  <!-- Dataset structured data for search/Scholar discoverability. TODO: set url/license/DOI at release. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "name": "WorkBenchMark",
+    "description": "A LEGO Duplo-based robotic assembly benchmark with 400 tasks across four complexity tiers, a reproducible MuJoCo/LIBERO simulation environment, and an open-vocabulary Assembly-by-Disassembly baseline. Motivated by the RoboCup Smart Manufacturing League.",
+    "keywords": ["robotic assembly", "benchmark", "task and motion planning", "manipulation", "RoboCup", "LEGO Duplo"],
+    "creator": [
+      {"@type": "Person", "name": "Wenbo Ma"},
+      {"@type": "Person", "name": "Daniel Swoboda"},
+      {"@type": "Person", "name": "Matteo Tschesche"},
+      {"@type": "Person", "name": "Till Hofmann"}
+    ],
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "isAccessibleForFree": true
+  }
+  </script>
+
+  <link rel="icon" type="image/svg+xml" href="static/images/logo.svg">
+
+  <!-- pixel font for the wordmark logo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <!-- Bulma + icons via CDN (no build step) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+</head>
+<body>
+
+<!-- ============================== NAVBAR ============================== -->
+<nav class="navbar is-fixed-top wbm-navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item wbm-brand" href="#top">
+      <img src="static/images/logo.svg" alt="" class="wbm-brand-mark">
+      <span class="wbm-wordmark wbm-wordmark-sm">
+        <span class="c-blue">Work</span><span class="c-red">Bench</span><span class="c-green">Mark</span>
+      </span>
+    </a>
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="wbmNav">
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div id="wbmNav" class="navbar-menu">
+    <div class="navbar-end">
+      <a class="navbar-item" href="#overview">Overview</a>
+      <a class="navbar-item" href="#leaderboard">Leaderboard</a>
+      <a class="navbar-item" href="#task">Task</a>
+      <a class="navbar-item" href="#benchmark">Benchmark</a>
+      <a class="navbar-item" href="#explore">Explore</a>
+      <a class="navbar-item" href="#dataset">Dataset</a>
+      <a class="navbar-item" href="#citation">Citation</a>
+    </div>
+  </div>
+</nav>
+
+<span id="top"></span>
+
+<!-- ============================== HERO ============================== -->
+<section class="section wbm-hero">
+  <div class="container is-max-desktop has-text-centered">
+    <h1 class="title is-2 publication-title wbm-hero-logo">
+      <img src="static/images/logo.svg" alt="" class="wbm-hero-mark">
+      <span class="wbm-wordmark">
+        <span class="c-blue">Work</span><span class="c-red">Bench</span><span class="c-green">Mark</span>
+      </span>
+    </h1>
+    <h2 class="subtitle is-4 mt-4">A LEGO-Based Assembly Benchmark with an Assembly-by-Disassembly
+      Baseline for the Smart Manufacturing League</h2>
+
+    <div class="is-size-5 publication-authors">
+      <span class="author-block"><a href="#">Wenbo Ma</a><sup>1</sup>,</span>
+      <span class="author-block"><a href="https://orcid.org/0000-0002-3189-3089">Daniel Swoboda</a><sup>1</sup>,</span>
+      <span class="author-block"><a href="#">Matteo Tschesche</a><sup>2</sup>,</span>
+      <span class="author-block"><a href="#">Till Hofmann</a><sup>1</sup></span>
+    </div>
+    <div class="is-size-6 publication-affiliations mt-2">
+      <span><sup>1</sup>Chair of Machine Learning and Reasoning (i6), RWTH Aachen University</span><br>
+      <span><sup>2</sup>MASCOR Institute, FH Aachen University of Applied Science</span>
+    </div>
+    <p class="is-size-6 has-text-grey mt-2">A benchmark for robotic assembly &mdash; manipulation meets task-level reasoning</p>
+
+    <!-- Primary call to action -->
+    <div class="buttons is-centered mt-5 wbm-links">
+      <a class="button is-primary is-medium is-rounded" href="#dataset">
+        <span class="icon"><i class="fas fa-download"></i></span><span>Get the Dataset</span></a>
+      <!-- TODO: drop the camera-ready PDF at static/pdfs/workbenchmark.pdf -->
+      <a class="button is-medium is-rounded" href="static/pdfs/workbenchmark.pdf">
+        <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Read the Paper</span></a>
+    </div>
+    <!-- Secondary links. TODO: replace the "#" placeholders with real URLs before publishing. -->
+    <div class="buttons is-centered wbm-links">
+      <!-- TODO: arXiv link -->
+      <a class="button is-small is-dark is-rounded" href="#">
+        <span class="icon"><i class="ai ai-arxiv"></i></span><span>arXiv</span></a>
+      <!-- TODO: code repository URL -->
+      <a class="button is-small is-dark is-rounded" href="#">
+        <span class="icon"><i class="fab fa-github"></i></span><span>Code</span></a>
+      <a class="button is-small is-dark is-rounded" href="#leaderboard">
+        <span class="icon"><i class="fas fa-ranking-star"></i></span><span>Leaderboard</span></a>
+    </div>
+
+    <!-- ===== Hero animation: scattered bricks assemble into the target (pure HTML/CSS/JS) ===== -->
+    <div class="wbm-anim-wrap mt-6">
+      <div id="wbm-anim" class="wbm3d-stage" role="img"
+           aria-label="3D animation: loose LEGO bricks move one by one to assemble the greyed-out target structure.">
+        <span class="wbm-anim-label wbm-anim-label-l">Parts</span>
+        <span class="wbm-anim-label wbm-anim-label-r">Target</span>
+        <div class="wbm3d-world"><!-- ghosts + bricks injected by static/js/index.js --></div>
+      </div>
+    </div>
+    <p class="is-size-6 has-text-grey mt-3">
+      Every task: build the target product from a pile of bricks.
+    </p>
+  </div>
+</section>
+
+<!-- ============================== ABSTRACT ============================== -->
+<section id="overview" class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Abstract</h2>
+    <div class="content is-size-5 has-text-justified">
+      <p>
+        We introduce <strong>WorkBenchMark</strong>, a LEGO Duplo-based robotic assembly
+        benchmark motivated by the RoboCup Smart Manufacturing League. Robotic assembly
+        couples low-level manipulation with task-level symbolic reasoning under physical
+        constraints &mdash; a combination that current end-to-end learning methods do not yet
+        solve reliably. The benchmark provides <strong>400 tasks across four complexity
+        tiers</strong>. We provide an open-vocabulary perception,
+        <strong>Assembly-by-Disassembly</strong> baseline solution. Our planning-based
+        pipeline outperforms a modern vision-language-action approach across all tiers.
+        The benchmark, simulation environment, and baseline implementation will be released
+        openly to support the broader robotic assembly community.
+      </p>
+    </div>
+
+    <div class="notification is-light is-size-6 mt-4">
+      <span class="icon-text">
+        <span class="icon has-text-link"><i class="fas fa-circle-info"></i></span>
+        <span>WorkBenchMark draws its task design from the <strong>Workbench Track</strong> of the
+        RoboCup <strong>Smart Manufacturing League (SML)</strong>, where robots assemble products
+        from supplied parts. You do <strong>not</strong> need to take part in RoboCup to use it &mdash;
+        it is a standalone, open benchmark for anyone working on robotic assembly, task-and-motion
+        planning, or manipulation.</span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== LEADERBOARD ============================== -->
+<section id="leaderboard" class="section has-background-light">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Leaderboard</h2>
+    <p class="content is-size-5 has-text-centered mb-5">
+      Every method, every metric, every tier. Each cell shows the four per-tier scores
+      (<span class="wbm-tier-key">T1&nbsp;T2&nbsp;T3&nbsp;T4</span>) with the
+      <strong>Overall</strong> average below. Click any column to rank by it.
+      Want to appear here? See <a href="#how-to-submit">how to submit</a>.
+    </p>
+
+    <!-- metric guide: explains each score, independent of how many methods are listed -->
+    <h3 class="is-size-6 has-text-weight-semibold has-text-grey mb-3">What the Metrics Mean</h3>
+    <div class="columns is-multiline wbm-metric-guide mb-5" id="metric-guide"><!-- injected by static/js/index.js --></div>
+
+    <!-- main leaderboard: rows = methods (scales), columns = metrics; each cell = 4 tiers + overall -->
+    <div class="table-container">
+      <table class="table is-fullwidth is-hoverable wbm-lb">
+        <thead><tr id="lb-head"><!-- injected by static/js/index.js --></tr></thead>
+        <tbody id="lb-body"><!-- injected by static/js/index.js --></tbody>
+      </table>
+    </div>
+    <p class="is-size-7 has-text-grey has-text-centered mt-3">
+      In each cell: <span class="wbm-tier-key">96.67 90.00 70.00 66.67</span> = Tiers&nbsp;1&ndash;4
+      (small), <strong>80.84</strong> = Overall (bold). &nbsp;&middot;&nbsp;
+      <span class="wbm-dir">&uarr;</span> higher is better &nbsp;&middot;&nbsp;
+      <span class="wbm-dir">&darr;</span> lower is better &nbsp;&middot;&nbsp;
+      <strong class="has-text-link">blue</strong> = best Overall, <strong>bold</strong> = best in that tier.
+    </p>
+    <p class="is-size-7 has-text-centered mt-1 wbm-warn-text">
+      <span class="icon"><i class="fas fa-triangle-exclamation"></i></span>
+      Planning and manipulation times depend on hardware and implementation &mdash; treat
+      cross-submission timing comparisons with caution.
+    </p>
+
+    <!-- ===== Real-robot track ===== -->
+    <h3 class="title is-4 has-text-centered mt-6">Real-Robot Track <span class="tag is-link is-light is-rounded is-medium">UR5</span></h3>
+    <p class="content is-size-6 has-text-centered mb-4">
+      The structured pipeline run on a physical UR5 with a Robotiq&nbsp;2F-style gripper and an
+      Intel RealSense camera (10 trials per tier). Tier&nbsp;4 is left for future real-robot validation.
+    </p>
+    <div class="table-container">
+      <table class="table is-fullwidth is-hoverable wbm-realrobot">
+        <thead>
+          <tr>
+            <th>Tier</th>
+            <th>Physical task</th>
+            <th class="has-text-centered">Steps</th>
+            <th class="has-text-right">Success</th>
+            <th class="has-text-right">Runtime (s)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Tier 1</th><td>Single-brick relocation to a target pose</td>
+            <td class="has-text-centered">1</td><td class="has-text-right">9 / 10 <span class="wbm-pct">(90%)</span></td><td class="has-text-right">55.77 &plusmn; 4.29</td></tr>
+          <tr><th scope="row">Tier 2</th><td>Multi-brick vertical stacking</td>
+            <td class="has-text-centered">2&ndash;4</td><td class="has-text-right">9 / 10 <span class="wbm-pct">(90%)</span></td><td class="has-text-right">167.98 &plusmn; 8.96</td></tr>
+          <tr><th scope="row">Tier 3</th><td>Shape assembly (e.g. bridge structure)</td>
+            <td class="has-text-centered">4&ndash;6</td><td class="has-text-right">7 / 10 <span class="wbm-pct">(70%)</span></td><td class="has-text-right">183.33 &plusmn; 7.38</td></tr>
+          <tr class="wbm-na"><th scope="row">Tier 4</th><td>Complex shape assembly</td>
+            <td class="has-text-centered">&mdash;</td><td class="has-text-right">not attempted</td><td class="has-text-right">&mdash;</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="is-size-7 has-text-grey has-text-centered mt-2">
+      Runtime is full-pipeline wall-clock time (perception, planning, execution, communication),
+      so it is not comparable to the simulation timings above.
+    </p>
+
+    <div class="box mt-5" id="how-to-submit">
+      <h3 class="title is-5"><span class="icon"><i class="fas fa-paper-plane"></i></span> How to Submit</h3>
+      <div class="content">
+        <p>We welcome new submissions to the leaderboard. To add your method:</p>
+        <ol>
+          <li>Evaluate on all four tiers using the standardized metrics above, reported as the average per tier.</li>
+          <li>Prepare a short description of your method with a link to the paper or code.</li>
+          <li>Report the hardware you used, so timing results can be interpreted fairly.</li>
+          <li>Ideally, provide the running code in a reproducible form &mdash; for example an
+            <a href="https://apptainer.org/">Apptainer</a>/Singularity or Docker image &mdash; so
+            your numbers can be reproduced with little overhead.</li>
+          <li>Email your per-tier results table to
+            <!-- TODO: confirm submission contact address -->
+            <a href="mailto:workbenchmark@ml.rwth-aachen.de">workbenchmark@ml.rwth-aachen.de</a>,
+            or open a pull request on the
+            <!-- TODO: code repository URL -->
+            <a href="#">GitHub repository</a>.</li>
+        </ol>
+      </div>
+      <p class="is-size-7 has-text-grey mt-2">Submissions are reviewed before being added to keep the leaderboard fair and reproducible.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== THE TASK ============================== -->
+<section id="task" class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">The Task</h2>
+    <p class="content is-size-5 has-text-justified mb-5">
+      Each task starts from a defined <strong>initial state</strong> that lists every
+      available LEGO Duplo brick and its placement in the <em>pick area</em>. The robot must
+      autonomously move the correct bricks and assemble them into a <strong>target
+      product</strong> &mdash; a specific arrangement of brick positions, rotations, types,
+      and colors &mdash; in the <em>assembly area</em>. The same tasks are defined for both
+      simulation and real-world execution.
+    </p>
+
+    <!-- init -> final visualization -->
+    <div class="wbm-task-flow mb-2">
+      <figure class="image">
+        <img src="static/images/initial.png" alt="Initial state in the pick area">
+        <figcaption class="is-size-7 has-text-grey mt-2">Initial state &mdash; bricks laid out in the pick area</figcaption>
+      </figure>
+      <span class="wbm-arrow icon is-large"><i class="fas fa-arrow-right"></i></span>
+      <figure class="image">
+        <img src="static/images/final_product.png" alt="Target assembled product">
+        <figcaption class="is-size-7 has-text-grey mt-2">Target product &mdash; assembled in the assembly area</figcaption>
+      </figure>
+    </div>
+    <p class="has-text-centered is-size-7 has-text-grey mb-6">
+      Example of a Tier&nbsp;4 task: the initial pick-area configuration (left) and its
+      corresponding target assembly (right).
+    </p>
+
+    <!-- workspace / task space -->
+    <h3 class="title is-4">The Workspace</h3>
+    <div class="columns is-vcentered">
+      <div class="column is-half">
+        <div class="content is-size-6">
+          <p>
+            A task takes place in a workspace of two disjoint regions &mdash; a
+            <strong>pick area</strong> <em>A</em><sub>pick</sub> and an
+            <strong>assembly area</strong> <em>A</em><sub>asm</sub>. The regions may be
+            placed freely within a <strong>1&nbsp;&times;&nbsp;1&nbsp;&times;&nbsp;2&nbsp;m</strong>
+            bounding volume, so the benchmark accommodates a range of robot embodiments.
+          </p>
+          <p>
+            Initially the pick area holds a set of bricks placed <strong>flat and
+            mutually non-contacting</strong>, with a minimum spacing of <strong>3&nbsp;cm</strong>.
+            It supplies at least one brick of every shape and color required by the target
+            (counting multiplicity) and may include additional <strong>distractor</strong> bricks.
+          </p>
+        </div>
+      </div>
+      <div class="column is-half">
+        <figure class="image">
+          <img src="static/images/workspace.png" alt="Experimental workspace with pick area, assembly area, and camera">
+          <figcaption class="is-size-7 has-text-grey mt-2 has-text-centered">
+            A Franka Emika Panda, a tabletop pick and assembly area, and LEGO Duplo bricks.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- target encoding -->
+    <h3 class="title is-4 mt-5">Target Structure as a Graph</h3>
+    <p class="content is-size-6">
+      A target assembly is encoded as a directed graph <em>G&nbsp;=&nbsp;(V,&nbsp;E)</em>.
+      Each vertex is a brick labelled with its <strong>shape</strong> and <strong>color</strong>;
+      a directed edge <em>(u,&nbsp;v)</em> means brick <em>v</em> is stacked on <em>u</em>,
+      annotated with the relative pose <em>T<sub>u,v</sub></em>&nbsp;&isin;&nbsp;SE(3) of
+      <em>v</em>'s center in <em>u</em>'s frame. Absolute target poses for every brick follow
+      by traversing the graph. Both the initial and target arrangements are stored as
+      <strong>YAML</strong> files (see <a href="#dataset">Dataset &amp; Usage</a>).
+    </p>
+
+    <!-- rules -->
+    <div class="notification is-light mt-5">
+      <p class="has-text-weight-semibold mb-2"><span class="icon"><i class="fas fa-circle-info"></i></span> Rules</p>
+      <ul class="content is-size-6">
+        <li>The initial-state file is only for <strong>setting up</strong> the task &mdash; it
+          must not be used as a substitute for perception.</li>
+        <li>The system must <strong>sense the scene, estimate brick poses, plan, and execute
+          autonomously</strong>, with no human intervention or environment resets.</li>
+        <li>A task is <strong>successful</strong> when the product is assembled in the assembly
+          area and is no longer in contact with the robot.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== BENCHMARK ============================== -->
+<section id="benchmark" class="section has-background-light">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">The Benchmark</h2>
+
+    <!-- stats callout -->
+    <div class="columns is-mobile is-multiline has-text-centered mb-5 wbm-stats">
+      <div class="column"><p class="title is-2">400</p><p class="heading">Simulation tasks</p></div>
+      <div class="column"><p class="title is-2">4</p><p class="heading">Complexity tiers</p></div>
+      <div class="column"><p class="title is-2">40</p><p class="heading">Real-world tasks</p></div>
+      <div class="column"><p class="title is-2">1&times;1&times;2 m</p><p class="heading">Bounding volume</p></div>
+    </div>
+
+    <p class="content is-size-5 has-text-centered mb-5">
+      The 400 tasks (100 per tier, 10 of each reserved for real-robot experiments) are
+      categorized into four complexity tiers that independently scale the
+      <strong>planning challenge</strong> (order dependencies, interlocking sub-assemblies)
+      and the <strong>manipulation challenge</strong> (tight tolerances, multi-layer insertions).
+    </p>
+
+    <div class="columns is-multiline">
+      <div class="column is-half">
+        <div class="card wbm-tier">
+          <div class="card-image"><figure class="image"><img src="static/images/tier1.png" alt="Tier 1 example"></figure></div>
+          <div class="card-content">
+            <p class="title is-5">Tier 1 &middot; Two-Brick Vertical Stacking</p>
+            <p class="subtitle is-6 has-text-grey">2 bricks</p>
+            <p>Evaluates basic pick-and-place with a vertical two-brick stack.</p>
+          </div>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div class="card wbm-tier">
+          <div class="card-image"><figure class="image"><img src="static/images/tier2.png" alt="Tier 2 example"></figure></div>
+          <div class="card-content">
+            <p class="title is-5">Tier 2 &middot; Multi-Brick Vertical Stacking</p>
+            <p class="subtitle is-6 has-text-grey">3&ndash;5 bricks</p>
+            <p>Introduces sequential error accumulation and repetitive precision requirements.</p>
+          </div>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div class="card wbm-tier">
+          <div class="card-image"><figure class="image"><img src="static/images/tier3.png" alt="Tier 3 example"></figure></div>
+          <div class="card-content">
+            <p class="title is-5">Tier 3 &middot; Shape Assembly</p>
+            <p class="subtitle is-6 has-text-grey">3&ndash;12 bricks</p>
+            <p>Expands into 3D spatial layouts, requiring horizontal and vertical positioning
+              for multi-column structures.</p>
+          </div>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div class="card wbm-tier">
+          <div class="card-image"><figure class="image"><img src="static/images/tier4.png" alt="Tier 4 example"></figure></div>
+          <div class="card-content">
+            <p class="title is-5">Tier 4 &middot; Complex Shape Assembly</p>
+            <p class="subtitle is-6 has-text-grey">3&ndash;12 bricks</p>
+            <p>Interlocking elements, overhangs, and stability dependencies that reduce the
+              number of feasible assembly sequences.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- simulation environment -->
+    <h3 class="title is-4 mt-6">Simulation Environment</h3>
+    <p class="content is-size-5">
+      The release includes a reproducible <strong>MuJoCo</strong> simulation environment built
+      with <strong>LIBERO</strong> tools and task conventions, so it plugs into the familiar
+      LIBERO-style workflow and task interface &mdash; while the LEGO Duplo assets, baseplates,
+      contact settings, and tasks are defined specifically for WorkBenchMark. The scene models a
+      <strong>Franka Emika Panda</strong> with a parallel-jaw gripper, a tabletop pick and
+      assembly area, and LEGO-compatible plates, observed by a fixed external and a wrist-mounted
+      RGB-D camera. The same tasks transfer to a real <strong>UR5</strong> with a Robotiq 2F-style
+      gripper.
+    </p>
+    <div class="columns is-multiline mt-2">
+      <div class="column is-half">
+        <div class="wbm-feature">
+          <span class="icon has-text-link"><i class="fas fa-cubes"></i></span>
+          <p><strong>Faithful brick contacts.</strong> Bricks load from STL meshes scaled to
+            metric units; bodies use box colliders and studs use cylindrical primitives, with
+            friction and contact parameters tuned for stable stud-based insertion.</p>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div class="wbm-feature">
+          <span class="icon has-text-link"><i class="fas fa-camera"></i></span>
+          <p><strong>Two camera views.</strong> A global external view for scene-level detection
+            and pose estimation, plus a wrist view for robust close-range manipulation under
+            occlusion.</p>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div class="wbm-feature">
+          <span class="icon has-text-link"><i class="fas fa-arrows-to-dot"></i></span>
+          <p><strong>Grid-aligned targets.</strong> Baseplates carry cylindrical studs aligned to
+            the LEGO Duplo grid, giving a fixed geometric reference for assembled structures.</p>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div class="wbm-feature">
+          <span class="icon has-text-link"><i class="fas fa-flask"></i></span>
+          <p><strong>Reproducible protocol.</strong> Every method receives identical initial
+            configurations and target specifications per tier. Reference runs used a single
+            NVIDIA RTX&nbsp;4000 Ada GPU.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== DATASET EXPLORER ============================== -->
+<section id="explore" class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Explore the Tiers</h2>
+    <p class="content is-size-5 has-text-centered mb-4">
+      Live 3D renderings of a representative target structure for each tier, built in the browser.
+      Pick a tier &mdash; drag is not needed, it rotates on its own.
+    </p>
+
+    <div class="tabs is-centered is-toggle is-small" id="explorer-tabs">
+      <ul>
+        <li class="is-active"><a data-tier="0">Tier 1</a></li>
+        <li><a data-tier="1">Tier 2</a></li>
+        <li><a data-tier="2">Tier 3</a></li>
+        <li><a data-tier="3">Tier 4</a></li>
+      </ul>
+    </div>
+
+    <div class="wbm-explorer-stage" id="wbm-explorer" role="img"
+         aria-label="Rotating 3D rendering of a representative target structure for the selected tier.">
+      <div class="wbm-explorer-tilt">
+        <div class="wbm-explorer-spin" id="wbm-explorer-spin"><!-- bricks injected by static/js/index.js --></div>
+      </div>
+    </div>
+    <div class="wbm-explorer-dots" id="explorer-dots"><!-- example dots injected by static/js/index.js --></div>
+    <p class="has-text-centered is-size-6 has-text-grey mt-2" id="explorer-caption"></p>
+  </div>
+</section>
+
+<!-- ============================== BASELINE (short) ============================== -->
+<section id="method" class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Baseline</h2>
+    <p class="content is-size-5 has-text-justified mb-5">
+      We provide an integrated baseline that combines constraint-driven
+      <strong>Assembly-by-Disassembly</strong> planning &mdash; enforcing grasp reachability
+      and structural stability &mdash; with <strong>open-vocabulary perception</strong>
+      (language-guided detection, segmentation, and 6D pose estimation) and
+      <strong>collision-aware</strong> motion execution. It produces physically feasible
+      assembly sequences and outperforms a modern vision-language-action baseline across all
+      tiers (see the <a href="#leaderboard">leaderboard</a>). Full method details are in the
+      <a href="static/pdfs/workbenchmark.pdf">paper</a>.
+    </p>
+
+    <figure class="mb-4">
+      <div class="wbm-pipeline" role="img"
+           aria-label="Pipeline: a product specification flows through planning, perception, and execution into a finished assembly.">
+        <div class="wbm-pipe-io">
+          <code>product.yaml</code><small>input</small>
+        </div>
+        <div class="wbm-pipe-conn"><i class="fas fa-arrow-right"></i></div>
+
+        <div class="wbm-pipe-stage wbm-s1">
+          <span class="wbm-pipe-num">1</span>
+          <p class="wbm-pipe-title">Planning</p>
+          <p class="wbm-pipe-sub">Assembly-by-Disassembly with a voxel feasibility check</p>
+        </div>
+        <div class="wbm-pipe-conn"><i class="fas fa-arrow-right"></i></div>
+
+        <div class="wbm-pipe-stage wbm-s2">
+          <span class="wbm-pipe-num">2</span>
+          <p class="wbm-pipe-title">Perception</p>
+          <p class="wbm-pipe-sub">GroundingDINO + SAM + FoundationPose</p>
+        </div>
+        <div class="wbm-pipe-conn"><i class="fas fa-arrow-right"></i></div>
+
+        <div class="wbm-pipe-stage wbm-s3">
+          <span class="wbm-pipe-num">3</span>
+          <p class="wbm-pipe-title">Execution</p>
+          <p class="wbm-pipe-sub">8-state machine with MoveIt&nbsp;2</p>
+        </div>
+      </div>
+      <figcaption class="is-size-7 has-text-grey has-text-centered mt-3">
+        Pipeline overview: from RGB-D input and a product specification to a physically
+        feasible, collision-aware assembly sequence.
+      </figcaption>
+    </figure>
+
+    <!-- ===== Results video =====
+         TODO: drop qualitative result clips at static/videos/results.mp4. -->
+    <figure class="image wbm-teaser mt-5">
+      <video poster="static/images/final_product.png" controls muted loop playsinline>
+        <source src="static/videos/results.mp4" type="video/mp4">
+      </video>
+      <figcaption class="is-size-7 has-text-grey mt-2 has-text-centered">
+        Qualitative execution results (video coming soon).
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+
+<!-- ============================== DATASET / USAGE ============================== -->
+<section id="dataset" class="section has-background-light">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Dataset &amp; Usage</h2>
+    <p class="content is-size-5 has-text-centered mb-4">
+      Grab the 400 tasks and the simulation environment, run the baseline, and
+      <a href="#how-to-submit">put your method on the leaderboard</a>.
+    </p>
+
+    <!-- download buttons. TODO: point at the real release + DOI before publishing. -->
+    <div class="buttons is-centered mb-2 wbm-links">
+      <a class="button is-primary is-medium is-rounded" href="#">
+        <span class="icon"><i class="fab fa-github"></i></span><span>Download (GitHub Release)</span></a>
+      <a class="button is-medium is-rounded" href="#">
+        <span class="icon"><i class="ai ai-zenodo"></i></span><span>Zenodo (DOI)</span></a>
+      <a class="button is-medium is-rounded" href="#how-to-submit">
+        <span class="icon"><i class="fas fa-paper-plane"></i></span><span>Submit to Leaderboard</span></a>
+    </div>
+    <p class="is-size-7 has-text-grey has-text-centered mb-5">Released under an open license &mdash; free for research and competition use.</p>
+
+    <h3 class="title is-4">Task Specification Format</h3>
+    <p class="content is-size-5">
+      Each task is a structured YAML file describing the target product as a set of bricks.
+      Every brick has a <code>name</code> (a key, not bound to a specific physical brick),
+      a <code>type</code> (e.g. <code>brick_2x2</code>, <code>brick_4x2</code>), a
+      <code>color</code>, a <code>pos</code> (translation, in metres) and a
+      <code>rotation</code> (Euler angles, in degrees), all relative to a common frame.
+    </p>
+    <pre><code class="language-yaml">blocks:
+  - name: "2x2_brick_1"
+    type: "brick_2x2"
+    color: "blue"
+    pos: [-0.096, 0.084, 0.0]
+    rotation: [0, 0, 0]
+
+  - name: "2x2_brick_2"
+    type: "brick_2x2"
+    color: "yellow"
+    pos: [-0.096, 0.084, 0.02]
+    rotation: [0, 0, 90]</code></pre>
+
+    <h3 class="title is-4 mt-6">Loading a Task in Python</h3>
+    <pre><code class="language-python">import yaml
+
+with open("tier1.yaml") as f:
+    task = yaml.safe_load(f)
+
+for brick in task["blocks"]:
+    print(brick["name"], brick["type"], brick["color"],
+          brick["pos"], brick["rotation"])</code></pre>
+
+    <h3 class="title is-4 mt-6">Running the Simulation</h3>
+    <p class="content is-size-5">
+      Tasks run in the provided <a href="#benchmark">MuJoCo + LIBERO environment</a>. Grab the
+      code below and follow the quickstart to roll out a task or evaluate a method.
+    </p>
+
+    <!-- TODO: replace with the real simulation repository link at release. -->
+    <div class="buttons mb-2">
+      <a class="button is-medium is-rounded is-static">
+        <span class="icon"><i class="fas fa-code-branch"></i></span>
+        <span>Simulation environment &mdash; link TBD</span></a>
+    </div>
+
+    <!-- TODO: replace with the real install + launch commands once the code is released. -->
+    <pre><code class="language-bash"># Setup and launch instructions — TBD
+# (released together with the simulation code)</code></pre>
+
+    <h3 class="title is-4 mt-6">License</h3>
+    <!-- TODO: confirm final licenses before publishing. -->
+    <p class="content is-size-6">
+      Everything is released openly upon publication, with the dataset and the code licensed
+      separately (to be confirmed):
+    </p>
+    <ul class="content is-size-6">
+      <li><strong>Dataset</strong> (tasks &amp; assets) &mdash; planned <strong>CC&nbsp;BY&nbsp;4.0</strong>.</li>
+      <li><strong>Code</strong> (simulation environment &amp; baseline) &mdash; planned <strong>MIT</strong>.</li>
+    </ul>
+
+    <h3 class="title is-4 mt-6">FAQ</h3>
+    <div class="content">
+      <details class="wbm-faq"><summary>How do I load a task?</summary>
+        <p>Each task is a YAML file; use the Python snippet above (<code>yaml.safe_load</code>) or
+        the loaders in the released code.</p></details>
+      <details class="wbm-faq"><summary>Which split should I report?</summary>
+        <p>Report all four tiers, averaged per tier, exactly as in the leaderboard. The 40
+        real-robot tasks (10 per tier) are a separate track.</p></details>
+      <details class="wbm-faq"><summary>Can I use the initial-state file as input?</summary>
+        <p>No &mdash; it is only for setting up the task. Methods must perceive the scene; see the
+        <a href="#task">task rules</a>.</p></details>
+      <details class="wbm-faq"><summary>How do I get on the leaderboard?</summary>
+        <p>Follow <a href="#how-to-submit">How to Submit</a>. Providing a reproducible
+        (e.g. Apptainer/Docker) run is encouraged.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== CITATION ============================== -->
+<section id="citation" class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Citation</h2>
+    <div class="wbm-bibtex-wrap">
+      <button id="copy-bibtex" class="button is-small is-light wbm-copy-btn">
+        <span class="icon"><i class="fas fa-copy"></i></span><span>Copy</span></button>
+      <pre id="bibtex"><code class="nohighlight">@inproceedings{ma2026workbenchmark,
+  title     = {WorkBenchMark: A LEGO-Based Assembly Benchmark with an
+               Assembly-by-Disassembly Baseline for the Smart Manufacturing League},
+  author    = {Ma, Wenbo and Swoboda, Daniel and Tschesche, Matteo and Hofmann, Till},
+  booktitle = {RoboCup 2026: Robot World Cup},
+  year      = {2026},
+  note      = {To appear}
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== FOOTER ============================== -->
+<footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+      WorkBenchMark &mdash; RWTH Aachen University &amp; FH Aachen University of Applied Science.
+    </p>
+    <p class="is-size-7 has-text-grey wbm-ack">
+      Supported by the Alexander von Humboldt Foundation with funds from the German Federal
+      Ministry for Education and Research; by the German Federal Ministry of Research, Technology
+      and Space (BMFTR) under grant no.&nbsp;02L19C602; and by the BMFTR and the Ministry of
+      Culture and Science of the German State of North Rhine-Westphalia (MKW) under the
+      Excellence Strategy of the Federal Government and the L&auml;nder.
+    </p>
+    <p class="is-size-7 has-text-grey">
+      Questions? <a href="mailto:workbenchmark@ml.rwth-aachen.de">workbenchmark@ml.rwth-aachen.de</a>
+    </p>
+    <p class="is-size-7 has-text-grey">
+      Website template adapted from the
+      <a href="https://github.com/eliahuhorwitz/Academic-project-page-template">Academic Project Page Template</a>,
+      itself based on <a href="https://nerfies.github.io">Nerfies</a>. Licensed under
+      <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
+    </p>
+    <!-- TODO: bump version / date as the dataset is released. -->
+    <p class="is-size-7 has-text-grey wbm-version">Site v0.1 (draft) &middot; June 2026</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script src="static/js/index.js"></script>
+</body>
+</html>

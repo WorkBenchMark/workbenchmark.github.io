@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" shape-rendering="crispEdges" role="img" aria-label="WorkBenchMark logo: a stack of LEGO bricks">
+  <!-- two studs on top (flat, square, matte) -->
+  <rect x="16" y="8"  width="12" height="8" fill="#F5C400"/>
+  <rect x="16" y="14" width="12" height="2" fill="#C99400"/>
+  <rect x="36" y="8"  width="12" height="8" fill="#F5C400"/>
+  <rect x="36" y="14" width="12" height="2" fill="#C99400"/>
+
+  <!-- top brick (yellow) -->
+  <rect x="10" y="16" width="44" height="12" fill="#F5C400"/>
+  <rect x="10" y="25" width="44" height="3"  fill="#C99400"/>
+
+  <!-- middle brick (red) -->
+  <rect x="10" y="28" width="44" height="12" fill="#E0000A"/>
+  <rect x="10" y="37" width="44" height="3"  fill="#A60008"/>
+
+  <!-- bottom brick (blue) -->
+  <rect x="10" y="40" width="44" height="12" fill="#0B69C7"/>
+  <rect x="10" y="49" width="44" height="3"  fill="#084E94"/>
+</svg>
