@@ -331,23 +331,99 @@ document.addEventListener('DOMContentLoaded', function () {
   ];
 
   var OVERALL = 4; // index of the "Overall" column in each per-tier array
-  var fmt = function (v, unit) { return v.toFixed(2) + (unit === '%' ? '%' : ' ' + unit); };
+  var fmt = function (v, unit) {
+    if (v == null) return '&mdash;';
+    return v.toFixed(2) + (unit === '%' ? '%' : ' ' + unit);
+  };
   var arrowFor = function (m) {
     return m.higherIsBetter
       ? '<span class="wbm-dir" title="higher is better">&uarr;</span>'
       : '<span class="wbm-dir" title="lower is better">&darr;</span>';
   };
 
-  // best value per metric, per column (T1..T4, Overall), across all submissions — for highlighting
-  var best = {}; // best[metricKey] = [bestT1, bestT2, bestT3, bestT4, bestOverall]
-  METRICS.forEach(function (m) {
-    best[m.key] = [0, 1, 2, 3, 4].map(function (c) {
-      var col = SUBMISSIONS.map(function (s) { return s[m.key][c]; });
-      return m.higherIsBetter ? Math.max.apply(null, col) : Math.min.apply(null, col);
-    });
-  });
+  // ---- real-robot track (same cell format; null = tier not attempted) ----
+  var RR_METRICS = [
+    { key: 'success', label: 'Success Rate', short: 'Success Rate', unit: '%', higherIsBetter: true,
+      def: 'Share of real-robot trials ending in a complete, free-standing assembly.' },
+    { key: 'runtime', label: 'Runtime', short: 'Runtime', unit: 's', higherIsBetter: false, timed: true,
+      def: 'Full-pipeline wall-clock time per task on hardware.' }
+  ];
+  var RR_SUBMISSIONS = [
+    { name: 'Structured Pipeline', tag: 'Ours', isOurs: true, link: 'static/pdfs/workbenchmark.pdf',
+      success: [90.00, 90.00, 70.00, null, 83.33],
+      runtime: [55.77, 167.98, 183.33, null, 135.69] }
+  ];
 
-  // ---- metric guide cards (explain each score) ----
+  // ---- generic renderer: rows = methods, columns = metrics, each cell = 4 tiers + overall ----
+  function mountTable(metrics, submissions, headEl, bodyEl, opts) {
+    if (!headEl || !bodyEl) return;
+    opts = opts || {};
+    var sortable = opts.sortable !== false;
+    var sortKey = opts.defaultSort || metrics[0].key;
+
+    // best value per metric per column, ignoring nulls
+    var best = {};
+    metrics.forEach(function (m) {
+      best[m.key] = [0, 1, 2, 3, 4].map(function (c) {
+        var col = submissions.map(function (s) { return s[m.key][c]; })
+                             .filter(function (v) { return v != null; });
+        if (!col.length) return null;
+        return m.higherIsBetter ? Math.max.apply(null, col) : Math.min.apply(null, col);
+      });
+    });
+
+    function render() {
+      var sortMeta = metrics.find(function (m) { return m.key === sortKey; });
+      headEl.innerHTML = '<th class="wbm-rank">#</th><th>Method</th>' +
+        metrics.map(function (m) {
+          var on = sortable && m.key === sortKey ? ' is-sorted' : '';
+          return '<th class="has-text-right' + (sortable ? ' wbm-sortable' : '') + on + '"' +
+            (sortable ? ' data-key="' + m.key + '"' : '') + ' title="' + m.def + '">' +
+            m.short + ' ' + arrowFor(m) + ' <span class="wbm-unit">(' + m.unit + ')</span></th>';
+        }).join('');
+
+      var ranked = submissions.slice().sort(function (a, b) {
+        var av = a[sortKey][OVERALL], bv = b[sortKey][OVERALL];
+        if (av == null) return 1;
+        if (bv == null) return -1;
+        return sortMeta.higherIsBetter ? bv - av : av - bv;
+      });
+
+      bodyEl.innerHTML = ranked.map(function (s, i) {
+        var nameHtml = s.link ? '<a href="' + s.link + '">' + s.name + '</a>' : s.name;
+        var tag = s.tag ? ' <span class="tag is-link is-light is-rounded">' + s.tag + '</span>' : '';
+        var note = s.note ? '<span class="wbm-method-note">' + s.note + '</span>' : '';
+        var cells = metrics.map(function (m) {
+          var vals = s[m.key];
+          var tiers = [0, 1, 2, 3].map(function (c) {
+            if (vals[c] == null) return '<span class="wbm-na-cell">&mdash;</span>';
+            var b = vals[c] === best[m.key][c] ? 'wbm-best-tier' : '';
+            return '<span class="' + b + '">' + vals[c].toFixed(2) + '</span>';
+          }).join('<i class="wbm-sep">·</i>');
+          var ovBest = (vals[OVERALL] != null && vals[OVERALL] === best[m.key][OVERALL]) ? ' best' : '';
+          var td = 'wbm-cell' + (sortable && m.key === sortKey ? ' is-sorted' : '');
+          return '<td class="' + td + '">' +
+            '<span class="wbm-tiers">' + tiers + '</span>' +
+            '<span class="wbm-overall' + ovBest + '">' + fmt(vals[OVERALL], m.unit) + '</span>' +
+          '</td>';
+        }).join('');
+        return '<tr class="' + (s.isOurs ? 'method-ours' : '') + '">' +
+          '<td class="wbm-rank">' + (i + 1) + '</td>' +
+          '<td class="wbm-method"><span class="wbm-method-name">' + nameHtml + '</span>' + tag +
+            (note ? '<br>' + note : '') + '</td>' +
+          cells + '</tr>';
+      }).join('');
+
+      if (sortable) {
+        headEl.querySelectorAll('.wbm-sortable').forEach(function (th) {
+          th.addEventListener('click', function () { sortKey = th.dataset.key; render(); });
+        });
+      }
+    }
+    render();
+  }
+
+  // ---- metric guide cards (explain the simulation metrics) ----
   var guide = document.getElementById('metric-guide');
   if (guide) {
     guide.innerHTML = METRICS.map(function (m) {
@@ -364,64 +440,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }).join('');
   }
 
-  // ---- main leaderboard: rows = methods, columns = metrics (scales to many entries) ----
-  var lbHead = document.getElementById('lb-head');
-  var lbBody = document.getElementById('lb-body');
-  var sortKey = 'success'; // default ranking metric
-
-  function renderTable() {
-    var sortMeta = METRICS.find(function (m) { return m.key === sortKey; });
-
-    // header: # | Method | metric columns (clickable to sort)
-    lbHead.innerHTML = '<th class="wbm-rank">#</th><th>Method</th>' +
-      METRICS.map(function (m) {
-        var active = m.key === sortKey ? ' is-sorted' : '';
-        return '<th class="has-text-right wbm-sortable' + active + '" data-key="' + m.key + '" ' +
-          'title="' + m.def + '">' + m.short + ' ' + arrowFor(m) +
-          ' <span class="wbm-unit">(' + m.unit + ')</span></th>';
-      }).join('');
-
-    // sort submissions best-first by the active metric
-    var ranked = SUBMISSIONS.slice().sort(function (a, b) {
-      var d = a[sortKey][OVERALL] - b[sortKey][OVERALL];
-      return sortMeta.higherIsBetter ? -d : d;
-    });
-
-    lbBody.innerHTML = ranked.map(function (s, i) {
-      var rank = i + 1;
-      var nameHtml = s.link ? '<a href="' + s.link + '">' + s.name + '</a>' : s.name;
-      var tag = s.tag ? ' <span class="tag is-link is-light is-rounded">' + s.tag + '</span>' : '';
-      var note = s.note ? '<span class="wbm-method-note">' + s.note + '</span>' : '';
-      var cells = METRICS.map(function (m) {
-        var vals = s[m.key];
-        // four per-tier values (small), best-in-column bolded
-        var tiers = [0, 1, 2, 3].map(function (c) {
-          var b = vals[c] === best[m.key][c] ? 'wbm-best-tier' : '';
-          return '<span class="' + b + '">' + vals[c].toFixed(2) + '</span>';
-        }).join('<i class="wbm-sep">·</i>');
-        // overall value (prominent), best-in-column highlighted
-        var ovBest = vals[OVERALL] === best[m.key][OVERALL] ? ' best' : '';
-        var td = 'wbm-cell' + (m.key === sortKey ? ' is-sorted' : '');
-        return '<td class="' + td + '">' +
-          '<span class="wbm-tiers">' + tiers + '</span>' +
-          '<span class="wbm-overall' + ovBest + '">' + fmt(vals[OVERALL], m.unit) + '</span>' +
-        '</td>';
-      }).join('');
-      return '<tr class="' + (s.isOurs ? 'method-ours' : '') + '">' +
-        '<td class="wbm-rank">' + rank + '</td>' +
-        '<td class="wbm-method"><span class="wbm-method-name">' + nameHtml + '</span>' + tag +
-          (note ? '<br>' + note : '') + '</td>' +
-        cells + '</tr>';
-    }).join('');
-
-    // (re)bind sort handlers on the freshly rendered headers
-    lbHead.querySelectorAll('.wbm-sortable').forEach(function (th) {
-      th.addEventListener('click', function () {
-        sortKey = th.dataset.key;
-        renderTable();
-      });
-    });
-  }
-
-  if (lbHead && lbBody) renderTable();
+  mountTable(METRICS, SUBMISSIONS, document.getElementById('lb-head'), document.getElementById('lb-body'), { defaultSort: 'success' });
+  mountTable(RR_METRICS, RR_SUBMISSIONS, document.getElementById('rr-head'), document.getElementById('rr-body'), { sortable: false });
 });

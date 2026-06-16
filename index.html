@@ -67,10 +67,10 @@
   <div id="wbmNav" class="navbar-menu">
     <div class="navbar-end">
       <a class="navbar-item" href="#overview">Overview</a>
-      <a class="navbar-item" href="#leaderboard">Leaderboard</a>
       <a class="navbar-item" href="#task">Task</a>
       <a class="navbar-item" href="#benchmark">Benchmark</a>
       <a class="navbar-item" href="#explore">Explore</a>
+      <a class="navbar-item" href="#leaderboard">Leaderboard</a>
       <a class="navbar-item" href="#dataset">Dataset</a>
       <a class="navbar-item" href="#citation">Citation</a>
     </div>
@@ -157,6 +157,22 @@
       </p>
     </div>
 
+    <div class="content is-size-5">
+      <ul class="wbm-highlights">
+        <li><strong>400 assembly tasks</strong> across <strong>four difficulty tiers</strong>
+          (100 each); 40 for real robots, 10 per tier.</li>
+        <li>Every task: build a target LEGO Duplo product from scattered bricks &mdash;
+          coupling <strong>manipulation</strong> with <strong>task-level reasoning</strong>
+          under physical constraints.</li>
+        <li>A reproducible <strong>MuJoCo + LIBERO</strong> simulation environment with
+          structured YAML task specifications.</li>
+        <li>Standardized metrics (success, accuracy, planning/manipulation time, stability)
+          and a public <a href="#leaderboard">leaderboard</a> with simulation and real-robot tracks.</li>
+        <li>An open-vocabulary <strong>Assembly-by-Disassembly</strong> baseline that
+          outperforms a vision-language-action baseline across all tiers.</li>
+      </ul>
+    </div>
+
     <div class="notification is-light is-size-6 mt-4">
       <span class="icon-text">
         <span class="icon has-text-link"><i class="fas fa-circle-info"></i></span>
@@ -170,101 +186,9 @@
   </div>
 </section>
 
-<!-- ============================== LEADERBOARD ============================== -->
-<section id="leaderboard" class="section has-background-light">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered">Leaderboard</h2>
-    <p class="content is-size-5 has-text-centered mb-5">
-      Every method, every metric, every tier. Each cell shows the four per-tier scores
-      (<span class="wbm-tier-key">T1&nbsp;T2&nbsp;T3&nbsp;T4</span>) with the
-      <strong>Overall</strong> average below. Click any column to rank by it.
-      Want to appear here? See <a href="#how-to-submit">how to submit</a>.
-    </p>
-
-    <!-- metric guide: explains each score, independent of how many methods are listed -->
-    <h3 class="is-size-6 has-text-weight-semibold has-text-grey mb-3">What the Metrics Mean</h3>
-    <div class="columns is-multiline wbm-metric-guide mb-5" id="metric-guide"><!-- injected by static/js/index.js --></div>
-
-    <!-- main leaderboard: rows = methods (scales), columns = metrics; each cell = 4 tiers + overall -->
-    <div class="table-container">
-      <table class="table is-fullwidth is-hoverable wbm-lb">
-        <thead><tr id="lb-head"><!-- injected by static/js/index.js --></tr></thead>
-        <tbody id="lb-body"><!-- injected by static/js/index.js --></tbody>
-      </table>
-    </div>
-    <p class="is-size-7 has-text-grey has-text-centered mt-3">
-      In each cell: <span class="wbm-tier-key">96.67 90.00 70.00 66.67</span> = Tiers&nbsp;1&ndash;4
-      (small), <strong>80.84</strong> = Overall (bold). &nbsp;&middot;&nbsp;
-      <span class="wbm-dir">&uarr;</span> higher is better &nbsp;&middot;&nbsp;
-      <span class="wbm-dir">&darr;</span> lower is better &nbsp;&middot;&nbsp;
-      <strong class="has-text-link">blue</strong> = best Overall, <strong>bold</strong> = best in that tier.
-    </p>
-    <p class="is-size-7 has-text-centered mt-1 wbm-warn-text">
-      <span class="icon"><i class="fas fa-triangle-exclamation"></i></span>
-      Planning and manipulation times depend on hardware and implementation &mdash; treat
-      cross-submission timing comparisons with caution.
-    </p>
-
-    <!-- ===== Real-robot track ===== -->
-    <h3 class="title is-4 has-text-centered mt-6">Real-Robot Track <span class="tag is-link is-light is-rounded is-medium">UR5</span></h3>
-    <p class="content is-size-6 has-text-centered mb-4">
-      The structured pipeline run on a physical UR5 with a Robotiq&nbsp;2F-style gripper and an
-      Intel RealSense camera (10 trials per tier). Tier&nbsp;4 is left for future real-robot validation.
-    </p>
-    <div class="table-container">
-      <table class="table is-fullwidth is-hoverable wbm-realrobot">
-        <thead>
-          <tr>
-            <th>Tier</th>
-            <th>Physical task</th>
-            <th class="has-text-centered">Steps</th>
-            <th class="has-text-right">Success</th>
-            <th class="has-text-right">Runtime (s)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><th scope="row">Tier 1</th><td>Single-brick relocation to a target pose</td>
-            <td class="has-text-centered">1</td><td class="has-text-right">9 / 10 <span class="wbm-pct">(90%)</span></td><td class="has-text-right">55.77 &plusmn; 4.29</td></tr>
-          <tr><th scope="row">Tier 2</th><td>Multi-brick vertical stacking</td>
-            <td class="has-text-centered">2&ndash;4</td><td class="has-text-right">9 / 10 <span class="wbm-pct">(90%)</span></td><td class="has-text-right">167.98 &plusmn; 8.96</td></tr>
-          <tr><th scope="row">Tier 3</th><td>Shape assembly (e.g. bridge structure)</td>
-            <td class="has-text-centered">4&ndash;6</td><td class="has-text-right">7 / 10 <span class="wbm-pct">(70%)</span></td><td class="has-text-right">183.33 &plusmn; 7.38</td></tr>
-          <tr class="wbm-na"><th scope="row">Tier 4</th><td>Complex shape assembly</td>
-            <td class="has-text-centered">&mdash;</td><td class="has-text-right">not attempted</td><td class="has-text-right">&mdash;</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="is-size-7 has-text-grey has-text-centered mt-2">
-      Runtime is full-pipeline wall-clock time (perception, planning, execution, communication),
-      so it is not comparable to the simulation timings above.
-    </p>
-
-    <div class="box mt-5" id="how-to-submit">
-      <h3 class="title is-5"><span class="icon"><i class="fas fa-paper-plane"></i></span> How to Submit</h3>
-      <div class="content">
-        <p>We welcome new submissions to the leaderboard. To add your method:</p>
-        <ol>
-          <li>Evaluate on all four tiers using the standardized metrics above, reported as the average per tier.</li>
-          <li>Prepare a short description of your method with a link to the paper or code.</li>
-          <li>Report the hardware you used, so timing results can be interpreted fairly.</li>
-          <li>Ideally, provide the running code in a reproducible form &mdash; for example an
-            <a href="https://apptainer.org/">Apptainer</a>/Singularity or Docker image &mdash; so
-            your numbers can be reproduced with little overhead.</li>
-          <li>Email your per-tier results table to
-            <!-- TODO: confirm submission contact address -->
-            <a href="mailto:workbenchmark@ml.rwth-aachen.de">workbenchmark@ml.rwth-aachen.de</a>,
-            or open a pull request on the
-            <!-- TODO: code repository URL -->
-            <a href="#">GitHub repository</a>.</li>
-        </ol>
-      </div>
-      <p class="is-size-7 has-text-grey mt-2">Submissions are reviewed before being added to keep the leaderboard fair and reproducible.</p>
-    </div>
-  </div>
-</section>
 
 <!-- ============================== THE TASK ============================== -->
-<section id="task" class="section">
+<section id="task" class="section has-background-light">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">The Task</h2>
     <p class="content is-size-5 has-text-justified mb-5">
@@ -351,7 +275,7 @@
 </section>
 
 <!-- ============================== BENCHMARK ============================== -->
-<section id="benchmark" class="section has-background-light">
+<section id="benchmark" class="section">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">The Benchmark</h2>
 
@@ -424,8 +348,7 @@
       contact settings, and tasks are defined specifically for WorkBenchMark. The scene models a
       <strong>Franka Emika Panda</strong> with a parallel-jaw gripper, a tabletop pick and
       assembly area, and LEGO-compatible plates, observed by a fixed external and a wrist-mounted
-      RGB-D camera. The same tasks transfer to a real <strong>UR5</strong> with a Robotiq 2F-style
-      gripper.
+      RGB-D camera.
     </p>
     <div class="columns is-multiline mt-2">
       <div class="column is-half">
@@ -464,7 +387,7 @@
 </section>
 
 <!-- ============================== DATASET EXPLORER ============================== -->
-<section id="explore" class="section">
+<section id="explore" class="section has-background-light">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Explore the Tiers</h2>
     <p class="content is-size-5 has-text-centered mb-4">
@@ -492,8 +415,86 @@
   </div>
 </section>
 
+<!-- ============================== LEADERBOARD ============================== -->
+<section id="leaderboard" class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Leaderboard</h2>
+    <p class="content is-size-5 has-text-centered mb-5">
+      Methods evaluated on WorkBenchMark, in simulation and on a real robot. Each cell shows the
+      four per-tier scores (<span class="wbm-tier-key">T1&nbsp;T2&nbsp;T3&nbsp;T4</span>) with the
+      <strong>Overall</strong> average below; click any column to rank by it.
+      Want to appear here? See <a href="#how-to-submit">how to submit</a>.
+    </p>
+
+    <!-- simulation leaderboard: rows = methods, columns = metrics; each cell = 4 tiers + overall -->
+    <h3 class="title is-4 has-text-centered">Simulation Track</h3>
+    <div class="table-container">
+      <table class="table is-fullwidth is-hoverable wbm-lb">
+        <thead><tr id="lb-head"><!-- injected by static/js/index.js --></tr></thead>
+        <tbody id="lb-body"><!-- injected by static/js/index.js --></tbody>
+      </table>
+    </div>
+    <p class="is-size-7 has-text-grey has-text-centered mt-3">
+      In each cell: <span class="wbm-tier-key">96.67 90.00 70.00 66.67</span> = Tiers&nbsp;1&ndash;4
+      (small), <strong>80.84</strong> = Overall (bold). &nbsp;&middot;&nbsp;
+      <span class="wbm-dir">&uarr;</span> higher is better &nbsp;&middot;&nbsp;
+      <span class="wbm-dir">&darr;</span> lower is better &nbsp;&middot;&nbsp;
+      <strong class="has-text-link">blue</strong> = best Overall, <strong>bold</strong> = best in that tier.
+    </p>
+    <p class="is-size-7 has-text-centered mt-1 wbm-warn-text">
+      <span class="icon"><i class="fas fa-triangle-exclamation"></i></span>
+      Planning and manipulation times depend on hardware and implementation &mdash; treat
+      cross-submission timing comparisons with caution.
+    </p>
+
+    <!-- ===== Real-robot track (same table format) ===== -->
+    <h3 class="title is-4 has-text-centered mt-6">Real-Robot Track</h3>
+    <p class="content is-size-6 has-text-centered mb-4">
+      Results on a physical robot (e.g. a UR5-class arm with a parallel-jaw gripper and an RGB-D
+      camera), 10 trials per tier. Tier&nbsp;4 is reserved for future real-robot validation.
+    </p>
+    <div class="table-container">
+      <table class="table is-fullwidth is-hoverable wbm-lb">
+        <thead><tr id="rr-head"><!-- injected by static/js/index.js --></tr></thead>
+        <tbody id="rr-body"><!-- injected by static/js/index.js --></tbody>
+      </table>
+    </div>
+    <p class="is-size-7 has-text-grey has-text-centered mt-2">
+      Success counts complete, free-standing assemblies over 10 trials per tier. Runtime is
+      full-pipeline wall-clock time (perception, planning, execution, communication), so it is
+      not comparable to the simulation timings above.
+    </p>
+
+    <!-- metric guide: explains each score, below the tables -->
+    <h3 class="is-size-6 has-text-weight-semibold has-text-grey has-text-centered mt-6 mb-3">What the Metrics Mean</h3>
+    <div class="columns is-multiline wbm-metric-guide" id="metric-guide"><!-- injected by static/js/index.js --></div>
+
+    <div class="box mt-5" id="how-to-submit">
+      <h3 class="title is-5"><span class="icon"><i class="fas fa-paper-plane"></i></span> How to Submit</h3>
+      <div class="content">
+        <p>We welcome new submissions to the leaderboard. To add your method:</p>
+        <ol>
+          <li>Evaluate on all four tiers using the standardized metrics above, reported as the average per tier.</li>
+          <li>Prepare a short description of your method with a link to the paper or code.</li>
+          <li>Report the hardware you used, so timing results can be interpreted fairly.</li>
+          <li>Ideally, provide the running code in a reproducible form &mdash; for example an
+            <a href="https://apptainer.org/">Apptainer</a>/Singularity or Docker image &mdash; so
+            your numbers can be reproduced with little overhead.</li>
+          <li>Email your per-tier results table to
+            <!-- TODO: confirm submission contact address -->
+            <a href="mailto:workbenchmark@ml.rwth-aachen.de">workbenchmark@ml.rwth-aachen.de</a>,
+            or open a pull request on the
+            <!-- TODO: code repository URL -->
+            <a href="#">GitHub repository</a>.</li>
+        </ol>
+      </div>
+      <p class="is-size-7 has-text-grey mt-2">Submissions are reviewed before being added to keep the leaderboard fair and reproducible.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ============================== BASELINE (short) ============================== -->
-<section id="method" class="section">
+<section id="method" class="section has-background-light">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Baseline</h2>
     <p class="content is-size-5 has-text-justified mb-5">
@@ -556,7 +557,7 @@
 
 
 <!-- ============================== DATASET / USAGE ============================== -->
-<section id="dataset" class="section has-background-light">
+<section id="dataset" class="section">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Dataset &amp; Usage</h2>
     <p class="content is-size-5 has-text-centered mb-4">
@@ -653,7 +654,7 @@ for brick in task["blocks"]:
 </section>
 
 <!-- ============================== CITATION ============================== -->
-<section id="citation" class="section">
+<section id="citation" class="section has-background-light">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Citation</h2>
     <div class="wbm-bibtex-wrap">

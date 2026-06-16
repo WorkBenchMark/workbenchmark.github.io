@@ -416,6 +416,11 @@ body { padding-top: 3.25rem; }
 .wbm-overall.best { color: var(--brand); }
 /* key shown in the caption/legend */
 .wbm-tier-key { font-variant-numeric: tabular-nums; color: #9a9a9a; font-size: 0.85em; }
+.wbm-tiers .wbm-na-cell { color: #c8ccd2; }
+
+/* abstract-level highlights bullet list */
+.wbm-highlights { margin-top: 0.75rem; }
+.wbm-highlights li { margin-bottom: 0.4rem; }
 
 /* ---------- real-robot track table ---------- */
 .wbm-realrobot { background: transparent; font-variant-numeric: tabular-nums; }
