@@ -69,7 +69,6 @@
       <a class="navbar-item" href="#overview">Overview</a>
       <a class="navbar-item" href="#task">Task</a>
       <a class="navbar-item" href="#benchmark">Benchmark</a>
-      <a class="navbar-item" href="#explore">Explore</a>
       <a class="navbar-item" href="#leaderboard">Leaderboard</a>
       <a class="navbar-item" href="#dataset">Dataset</a>
       <a class="navbar-item" href="#citation">Citation</a>
@@ -386,37 +385,9 @@
   </div>
 </section>
 
-<!-- ============================== DATASET EXPLORER ============================== -->
-<section id="explore" class="section has-background-light">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered">Explore the Tiers</h2>
-    <p class="content is-size-5 has-text-centered mb-4">
-      Live 3D renderings of a representative target structure for each tier, built in the browser.
-      Pick a tier &mdash; drag is not needed, it rotates on its own.
-    </p>
-
-    <div class="tabs is-centered is-toggle is-small" id="explorer-tabs">
-      <ul>
-        <li class="is-active"><a data-tier="0">Tier 1</a></li>
-        <li><a data-tier="1">Tier 2</a></li>
-        <li><a data-tier="2">Tier 3</a></li>
-        <li><a data-tier="3">Tier 4</a></li>
-      </ul>
-    </div>
-
-    <div class="wbm-explorer-stage" id="wbm-explorer" role="img"
-         aria-label="Rotating 3D rendering of a representative target structure for the selected tier.">
-      <div class="wbm-explorer-tilt">
-        <div class="wbm-explorer-spin" id="wbm-explorer-spin"><!-- bricks injected by static/js/index.js --></div>
-      </div>
-    </div>
-    <div class="wbm-explorer-dots" id="explorer-dots"><!-- example dots injected by static/js/index.js --></div>
-    <p class="has-text-centered is-size-6 has-text-grey mt-2" id="explorer-caption"></p>
-  </div>
-</section>
 
 <!-- ============================== LEADERBOARD ============================== -->
-<section id="leaderboard" class="section">
+<section id="leaderboard" class="section has-background-light">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Leaderboard</h2>
     <p class="content is-size-5 has-text-centered mb-5">
@@ -494,7 +465,7 @@
 </section>
 
 <!-- ============================== BASELINE (short) ============================== -->
-<section id="method" class="section has-background-light">
+<section id="method" class="section">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Baseline</h2>
     <p class="content is-size-5 has-text-justified mb-5">
@@ -557,7 +528,7 @@
 
 
 <!-- ============================== DATASET / USAGE ============================== -->
-<section id="dataset" class="section">
+<section id="dataset" class="section has-background-light">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Dataset &amp; Usage</h2>
     <p class="content is-size-5 has-text-centered mb-4">
@@ -654,7 +625,7 @@ for brick in task["blocks"]:
 </section>
 
 <!-- ============================== CITATION ============================== -->
-<section id="citation" class="section has-background-light">
+<section id="citation" class="section">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Citation</h2>
     <div class="wbm-bibtex-wrap">
