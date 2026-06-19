@@ -48,8 +48,7 @@ folder as-is. No custom domain / CNAME is configured.
 
 Search `index.html` for `TODO`. Items to fill in:
 
-- [ ] Paper PDF → `static/pdfs/workbenchmark.pdf`
-- [ ] arXiv link (hero button)
+- [x] Paper PDF / arXiv link → https://arxiv.org/abs/2606.19358 (hero buttons + BibTeX `eprint` + JSON-LD citation)
 - [ ] Code repository URL (hero button, leaderboard "how to submit")
 - [ ] Results video → `static/videos/results.mp4` (the hero now uses a built-in CSS/JS assembly animation, so no teaser video is needed)
 - [ ] Dataset download link (GitHub release)

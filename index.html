@@ -31,7 +31,12 @@
       {"@type": "Person", "name": "Till Hofmann"}
     ],
     "license": "https://creativecommons.org/licenses/by/4.0/",
-    "isAccessibleForFree": true
+    "isAccessibleForFree": true,
+    "citation": {
+      "@type": "ScholarlyArticle",
+      "name": "WorkBenchMark: A LEGO-Based Assembly Benchmark with an Assembly-by-Disassembly Baseline for the Smart Manufacturing League",
+      "url": "https://arxiv.org/abs/2606.19358"
+    }
   }
   </script>
 
@@ -106,14 +111,12 @@
     <div class="buttons is-centered mt-5 wbm-links">
       <a class="button is-primary is-medium is-rounded" href="#dataset">
         <span class="icon"><i class="fas fa-download"></i></span><span>Get the Dataset</span></a>
-      <!-- TODO: drop the camera-ready PDF at static/pdfs/workbenchmark.pdf -->
-      <a class="button is-medium is-rounded" href="static/pdfs/workbenchmark.pdf">
+      <a class="button is-medium is-rounded" href="https://arxiv.org/pdf/2606.19358">
         <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Read the Paper</span></a>
     </div>
     <!-- Secondary links. TODO: replace the "#" placeholders with real URLs before publishing. -->
     <div class="buttons is-centered wbm-links">
-      <!-- TODO: arXiv link -->
-      <a class="button is-small is-dark is-rounded" href="#">
+      <a class="button is-small is-dark is-rounded" href="https://arxiv.org/abs/2606.19358">
         <span class="icon"><i class="ai ai-arxiv"></i></span><span>arXiv</span></a>
       <!-- TODO: code repository URL -->
       <a class="button is-small is-dark is-rounded" href="#">
@@ -476,7 +479,7 @@
       <strong>collision-aware</strong> motion execution. It produces physically feasible
       assembly sequences and outperforms a modern vision-language-action baseline across all
       tiers (see the <a href="#leaderboard">leaderboard</a>). Full method details are in the
-      <a href="static/pdfs/workbenchmark.pdf">paper</a>.
+      <a href="https://arxiv.org/abs/2606.19358">paper</a>.
     </p>
 
     <figure class="mb-4">
@@ -637,6 +640,8 @@ for brick in task["blocks"]:
   author    = {Ma, Wenbo and Swoboda, Daniel and Tschesche, Matteo and Hofmann, Till},
   booktitle = {RoboCup 2026: Robot World Cup},
   year      = {2026},
+  eprint        = {2606.19358},
+  archivePrefix = {arXiv},
   note      = {To appear}
 }</code></pre>
     </div>
