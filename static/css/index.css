@@ -77,6 +77,9 @@ body { padding-top: 3.25rem; }
 .publication-authors a { color: inherit; border-bottom: 1px solid transparent; }
 .publication-authors a:hover { border-bottom-color: currentColor; }
 
+.wbm-venue { color: #4a4a4a; font-size: 0.95rem; }
+.wbm-venue .tag { margin-right: 0.5rem; vertical-align: 0.05em; }
+
 .wbm-links .button { margin: 0.25rem; }
 
 /* ---------- teaser / result video ---------- */
@@ -375,6 +378,16 @@ body { padding-top: 3.25rem; }
 .wbm-mc-caveat .icon { width: 1em; height: 1em; margin-right: 0.15rem; vertical-align: -0.1em; }
 .wbm-warn-text { color: #b07d12; }
 .wbm-warn-text .icon { width: 1em; height: 1em; vertical-align: -0.1em; }
+
+.wbm-lb-takeaway {
+  max-width: 44rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--brand);
+  background: rgba(11, 105, 199, 0.06);
+  border-radius: 4px;
+}
 
 /* ---------- leaderboard: ranked table ---------- */
 .wbm-lb { background: transparent; font-variant-numeric: tabular-nums; }

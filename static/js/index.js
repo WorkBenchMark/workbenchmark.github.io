@@ -304,30 +304,36 @@ document.addEventListener('DOMContentLoaded', function () {
     { key: 'accuracy',     label: 'Execution Accuracy',      short: 'Exec. Acc.',   unit: '%', higherIsBetter: true,
       def: 'Fraction of brick-to-brick connections whose final relative pose matches the target.' },
     { key: 'planning',     label: 'Planning Time',           short: 'Planning',     unit: 's', higherIsBetter: false,
-      def: 'Wall-clock time spent on perception, reasoning, and motion planning (excludes robot motion).',
+      def: 'Wall-clock time spent on perception, reasoning, and motion planning (excludes physical robot motion).',
       timed: true },
-    { key: 'manipulation', label: 'Manipulation Time',       short: 'Manipulation', unit: 's', higherIsBetter: false,
-      def: 'Wall-clock duration of robot motion, from the first command to releasing the assembly.',
+    { key: 'wall',         label: 'Wall Time',               short: 'Wall Time',    unit: 's', higherIsBetter: false,
+      def: 'Wall-clock duration of solving one instance, end to end (perception, planning, and robot motion).',
       timed: true },
     { key: 'stability',    label: 'Stability Violation Rate', short: 'Stability',   unit: '%', higherIsBetter: false,
       def: 'Share of bricks in the assembly area that are not connected to the main structure.' }
   ];
 
   // ---- submissions: one entry per method. Add new methods here as the leaderboard grows. ----
-  // Source for the seed entries: paper Table 3 (tab:tier-metrics).
+  // Source for the seed entries: paper Table 2 (tab:tier-metrics).
   var SUBMISSIONS = [
-    { name: 'Structured Pipeline', tag: 'Ours', isOurs: true, link: 'static/pdfs/workbenchmark.pdf',
-      success:      [96.67, 90.00, 70.00, 66.67, 80.84],
-      accuracy:     [93.33, 87.22, 68.13, 66.55, 78.81],
-      planning:     [7.13, 13.66, 44.78, 46.82, 28.10],
-      manipulation: [8.28, 14.08, 51.34, 53.66, 31.84],
-      stability:    [3.33, 5.00, 10.80, 25.07, 11.05] },
-    { name: 'VLM/VLA Baseline', note: 'Gemini 2.5 Flash + π₀.₅', isOurs: false, link: null,
-      success:      [73.33, 63.33, 23.33, 6.67, 41.67],
-      accuracy:     [66.67, 48.82, 19.34, 13.54, 37.09],
-      planning:     [2.18, 2.29, 3.15, 3.66, 2.80],
-      manipulation: [15.46, 48.82, 164.45, 178.98, 101.93],
-      stability:    [38.33, 55.02, 82.97, 87.73, 68.51] }
+    { name: 'Structured Pipeline', tag: 'Ours', isOurs: true, link: 'https://arxiv.org/abs/2606.19358',
+      success:   [94.00, 87.00, 67.00, 62.00, 77.50],
+      accuracy:  [91.60, 84.90, 62.80, 58.40, 74.43],
+      planning:  [6.88, 10.35, 30.70, 32.25, 20.05],
+      wall:      [15.92, 23.68, 79.08, 83.87, 50.64],
+      stability: [3.00, 5.82, 11.37, 25.71, 11.48] },
+    { name: 'Fine-tuned VLA', note: 'π₀.₅ fine-tuned on ABD demos', isOurs: false, link: null,
+      success:   [82.00, 63.00, 23.00, 2.00, 42.50],
+      accuracy:  [74.50, 57.20, 22.30, 10.20, 41.05],
+      planning:  [2.58, 2.72, 3.62, 4.18, 3.28],
+      wall:      [13.15, 51.97, 168.64, 187.52, 105.32],
+      stability: [8.50, 23.48, 74.19, 87.99, 48.54] },
+    { name: 'VLM/VLA Baseline', note: 'Gemini 2.5 Flash → π₀.₅ (zero-shot)', isOurs: false, link: null,
+      success:   [70.00, 59.00, 19.00, 5.00, 38.25],
+      accuracy:  [62.40, 51.50, 15.70, 12.90, 35.63],
+      planning:  [2.24, 2.41, 3.27, 3.78, 2.93],
+      wall:      [19.74, 53.71, 171.28, 183.67, 107.10],
+      stability: [36.50, 56.75, 83.23, 88.80, 66.32] }
   ];
 
   var OVERALL = 4; // index of the "Overall" column in each per-tier array
@@ -345,13 +351,13 @@ document.addEventListener('DOMContentLoaded', function () {
   var RR_METRICS = [
     { key: 'success', label: 'Success Rate', short: 'Success Rate', unit: '%', higherIsBetter: true,
       def: 'Share of real-robot trials ending in a complete, free-standing assembly.' },
-    { key: 'runtime', label: 'Runtime', short: 'Runtime', unit: 's', higherIsBetter: false, timed: true,
+    { key: 'wall', label: 'Wall Time', short: 'Wall Time', unit: 's', higherIsBetter: false, timed: true,
       def: 'Full-pipeline wall-clock time per task on hardware.' }
   ];
   var RR_SUBMISSIONS = [
-    { name: 'Structured Pipeline', tag: 'Ours', isOurs: true, link: 'static/pdfs/workbenchmark.pdf',
+    { name: 'Structured Pipeline', tag: 'Ours', isOurs: true, link: 'https://arxiv.org/abs/2606.19358',
       success: [90.00, 90.00, 70.00, null, 83.33],
-      runtime: [55.77, 167.98, 183.33, null, 135.69] }
+      wall:    [55.77, 167.98, 183.33, null, 135.69] }
   ];
 
   // ---- generic renderer: rows = methods, columns = metrics, each cell = 4 tiers + overall ----

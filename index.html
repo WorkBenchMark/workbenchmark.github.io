@@ -95,6 +95,11 @@
     <h2 class="subtitle is-4 mt-4">A LEGO-Based Assembly Benchmark with an Assembly-by-Disassembly
       Baseline for the Smart Manufacturing League</h2>
 
+    <p class="wbm-venue mt-3">
+      <span class="tag is-link is-light is-rounded">Oral Presentation</span>
+      RoboCup Symposium 2026 &middot; Incheon, South Korea
+    </p>
+
     <div class="is-size-5 publication-authors">
       <span class="author-block"><a href="#">Wenbo Ma</a><sup>1</sup>,</span>
       <span class="author-block"><a href="https://orcid.org/0000-0002-3189-3089">Daniel Swoboda</a><sup>1</sup>,</span>
@@ -151,11 +156,14 @@
         couples low-level manipulation with task-level symbolic reasoning under physical
         constraints &mdash; a combination that current end-to-end learning methods do not yet
         solve reliably. The benchmark provides <strong>400 tasks across four complexity
-        tiers</strong>. We provide an open-vocabulary perception,
-        <strong>Assembly-by-Disassembly</strong> baseline solution. Our planning-based
-        pipeline outperforms a modern vision-language-action approach across all tiers.
-        The benchmark, simulation environment, and baseline implementation will be released
-        openly to support the broader robotic assembly community.
+        tiers</strong>, together with a simulation environment and an open-vocabulary
+        <strong>Assembly-by-Disassembly</strong> baseline that combines language-guided
+        perception, constraint-based planning, and collision-aware execution. The pipeline is
+        evaluated against <strong>zero-shot and fine-tuned vision-language-action baselines</strong>
+        on 100 tasks per tier, and achieves higher success, execution accuracy, and stability
+        across all tiers &mdash; especially on long-horizon assemblies. The benchmark, simulation
+        environment, and baseline implementation will be released openly to support the broader
+        robotic assembly community.
       </p>
     </div>
 
@@ -168,10 +176,11 @@
           under physical constraints.</li>
         <li>A reproducible <strong>MuJoCo + LIBERO</strong> simulation environment with
           structured YAML task specifications.</li>
-        <li>Standardized metrics (success, accuracy, planning/manipulation time, stability)
+        <li>Standardized metrics (success, accuracy, planning/wall time, stability)
           and a public <a href="#leaderboard">leaderboard</a> with simulation and real-robot tracks.</li>
         <li>An open-vocabulary <strong>Assembly-by-Disassembly</strong> baseline that
-          outperforms a vision-language-action baseline across all tiers.</li>
+          outperforms <strong>zero-shot and fine-tuned</strong> vision-language-action baselines
+          across all tiers.</li>
       </ul>
     </div>
 
@@ -321,7 +330,7 @@
         <div class="card wbm-tier">
           <div class="card-image"><figure class="image"><img src="static/images/tier3.png" alt="Tier 3 example"></figure></div>
           <div class="card-content">
-            <p class="title is-5">Tier 3 &middot; Shape Assembly</p>
+            <p class="title is-5">Tier 3 &middot; 3D Shape Assembly</p>
             <p class="subtitle is-6 has-text-grey">3&ndash;12 bricks</p>
             <p>Expands into 3D spatial layouts, requiring horizontal and vertical positioning
               for multi-column structures.</p>
@@ -409,16 +418,21 @@
       </table>
     </div>
     <p class="is-size-7 has-text-grey has-text-centered mt-3">
-      In each cell: <span class="wbm-tier-key">96.67 90.00 70.00 66.67</span> = Tiers&nbsp;1&ndash;4
-      (small), <strong>80.84</strong> = Overall (bold). &nbsp;&middot;&nbsp;
+      In each cell: <span class="wbm-tier-key">94.00 87.00 67.00 62.00</span> = Tiers&nbsp;1&ndash;4
+      (small), <strong>77.50</strong> = Overall (bold). &nbsp;&middot;&nbsp;
       <span class="wbm-dir">&uarr;</span> higher is better &nbsp;&middot;&nbsp;
       <span class="wbm-dir">&darr;</span> lower is better &nbsp;&middot;&nbsp;
       <strong class="has-text-link">blue</strong> = best Overall, <strong>bold</strong> = best in that tier.
     </p>
     <p class="is-size-7 has-text-centered mt-1 wbm-warn-text">
       <span class="icon"><i class="fas fa-triangle-exclamation"></i></span>
-      Planning and manipulation times depend on hardware and implementation &mdash; treat
+      Planning and wall-clock times depend on hardware and implementation &mdash; treat
       cross-submission timing comparisons with caution.
+    </p>
+    <p class="content is-size-6 has-text-centered mt-4 wbm-lb-takeaway">
+      <strong>Structured planning holds where VLAs collapse</strong> &mdash; even a fine-tuned VLA
+      drops to <strong>2%</strong> success on interlocking Tier&nbsp;4, while the structured pipeline
+      stays at <strong>62%</strong>.
     </p>
 
     <!-- ===== Real-robot track (same table format) ===== -->
@@ -477,8 +491,10 @@
       and structural stability &mdash; with <strong>open-vocabulary perception</strong>
       (language-guided detection, segmentation, and 6D pose estimation) and
       <strong>collision-aware</strong> motion execution. It produces physically feasible
-      assembly sequences and outperforms a modern vision-language-action baseline across all
-      tiers (see the <a href="#leaderboard">leaderboard</a>). Full method details are in the
+      assembly sequences and reaches <strong>77.5%</strong> overall success &mdash; ahead of both a
+      <strong>fine-tuned</strong> (42.5%) and a <strong>zero-shot</strong> (38.3%)
+      vision-language-action baseline across all tiers (see the
+      <a href="#leaderboard">leaderboard</a>). Full method details are in the
       <a href="https://arxiv.org/abs/2606.19358">paper</a>.
     </p>
 
@@ -638,11 +654,14 @@ for brick in task["blocks"]:
   title     = {WorkBenchMark: A LEGO-Based Assembly Benchmark with an
                Assembly-by-Disassembly Baseline for the Smart Manufacturing League},
   author    = {Ma, Wenbo and Swoboda, Daniel and Tschesche, Matteo and Hofmann, Till},
-  booktitle = {RoboCup 2026: Robot World Cup},
+  booktitle = {RoboCup 2026: Robot World Cup XXIX},
+  series    = {Lecture Notes in Computer Science},
+  publisher = {Springer},
+  address   = {Incheon, South Korea},
   year      = {2026},
   eprint        = {2606.19358},
   archivePrefix = {arXiv},
-  note      = {To appear}
+  note      = {Oral presentation, RoboCup Symposium 2026}
 }</code></pre>
     </div>
   </div>
