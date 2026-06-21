@@ -379,15 +379,6 @@ body { padding-top: 3.25rem; }
 .wbm-warn-text { color: #b07d12; }
 .wbm-warn-text .icon { width: 1em; height: 1em; vertical-align: -0.1em; }
 
-.wbm-lb-takeaway {
-  max-width: 44rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0.75rem 1rem;
-  border-left: 3px solid var(--brand);
-  background: rgba(11, 105, 199, 0.06);
-  border-radius: 4px;
-}
 
 /* ---------- leaderboard: ranked table ---------- */
 .wbm-lb { background: transparent; font-variant-numeric: tabular-nums; }
