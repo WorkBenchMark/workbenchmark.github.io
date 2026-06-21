@@ -73,6 +73,7 @@
     <div class="navbar-end">
       <a class="navbar-item" href="#overview">Overview</a>
       <a class="navbar-item" href="#task">Task</a>
+      <a class="navbar-item" href="#demo">Demo</a>
       <a class="navbar-item" href="#benchmark">Benchmark</a>
       <a class="navbar-item" href="#leaderboard">Leaderboard</a>
       <a class="navbar-item" href="#dataset">Dataset</a>
@@ -285,8 +286,56 @@
   </div>
 </section>
 
+<!-- ============================== DEMO ============================== -->
+<section id="demo" class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Real-Robot Demonstrations</h2>
+    <p class="content is-size-5 has-text-centered mb-5">
+      A UR cobot with a parallel gripper running the benchmark end-to-end &mdash; perceiving
+      the scene, planning grasps, and assembling each target autonomously. Five tasks of
+      increasing complexity, sped&nbsp;up and shown without sound.
+    </p>
+
+    <div class="wbm-demo columns is-vcentered" id="wbm-demo">
+      <!-- video -->
+      <div class="column is-narrow">
+        <div class="wbm-demo-frame">
+          <video id="wbm-demo-video" class="wbm-demo-video" playsinline muted autoplay loop controls
+                 preload="metadata" poster="static/videos/demo_poster.jpg">
+            <source src="static/videos/demo.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+
+      <!-- synced annotation panel -->
+      <div class="column">
+        <div class="wbm-demo-panel">
+          <p class="wbm-demo-eyebrow">
+            <span id="wbm-demo-step">Task 1</span> / 5
+          </p>
+          <h3 class="wbm-demo-title" id="wbm-demo-heading">Single brick</h3>
+          <p class="wbm-demo-desc" id="wbm-demo-desc">
+            Perceive one brick in the pick area, plan a grasp, and place it on the
+            assembly baseplate.
+          </p>
+          <p class="wbm-demo-meta">
+            <span class="tag is-link" id="wbm-demo-tier">Tier 1</span>
+            <span class="tag is-light" id="wbm-demo-bricks">1 brick</span>
+          </p>
+          <div class="wbm-demo-dots" id="wbm-demo-dots" role="tablist" aria-label="Jump to a task"></div>
+          <p class="wbm-demo-hint is-size-7 has-text-grey mt-4">
+            <span class="icon"><i class="fas fa-circle-info"></i></span>
+            Click a number to jump to that task, or scrub the video.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================== BENCHMARK ============================== -->
-<section id="benchmark" class="section">
+<section id="benchmark" class="section has-background-light">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">The Benchmark</h2>
 
@@ -399,7 +448,7 @@
 
 
 <!-- ============================== LEADERBOARD ============================== -->
-<section id="leaderboard" class="section has-background-light">
+<section id="leaderboard" class="section">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Leaderboard</h2>
     <p class="content is-size-5 has-text-centered mb-5">
@@ -482,7 +531,7 @@
 </section>
 
 <!-- ============================== BASELINE (short) ============================== -->
-<section id="method" class="section">
+<section id="method" class="section has-background-light">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Baseline</h2>
     <p class="content is-size-5 has-text-justified mb-5">
@@ -547,7 +596,7 @@
 
 
 <!-- ============================== DATASET / USAGE ============================== -->
-<section id="dataset" class="section has-background-light">
+<section id="dataset" class="section">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Dataset &amp; Usage</h2>
     <p class="content is-size-5 has-text-centered mb-4">
@@ -644,7 +693,7 @@ for brick in task["blocks"]:
 </section>
 
 <!-- ============================== CITATION ============================== -->
-<section id="citation" class="section">
+<section id="citation" class="section has-background-light">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Citation</h2>
     <div class="wbm-bibtex-wrap">

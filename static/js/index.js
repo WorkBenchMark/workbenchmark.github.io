@@ -448,4 +448,102 @@ document.addEventListener('DOMContentLoaded', function () {
 
   mountTable(METRICS, SUBMISSIONS, document.getElementById('lb-head'), document.getElementById('lb-body'), { defaultSort: 'success' });
   mountTable(RR_METRICS, RR_SUBMISSIONS, document.getElementById('rr-head'), document.getElementById('rr-body'), { sortable: false });
+
+  // ---- demo video: annotation panel synced to playback ----
+  (function () {
+    var video = document.getElementById('wbm-demo-video');
+    if (!video) return;
+
+    // Each segment's start time (seconds) in the stitched demo, with its annotation.
+    var SEGMENTS = [
+      { t: 0,      step: 'Task 1', tier: 'Tier 1', heading: 'Single brick',
+        desc: 'Perceive a single brick in the pick area, plan a grasp, and place it on the assembly baseplate.',
+        bricks: '1 brick' },
+      { t: 5.0,    step: 'Task 2', tier: 'Tier 1', heading: 'Two bricks',
+        desc: 'Two bricks placed onto the baseplate &mdash; a flat, single-layer Tier&nbsp;1 target.',
+        bricks: '2 bricks' },
+      { t: 17.767, step: 'Task 3', tier: 'Tier 2', heading: 'Three bricks',
+        desc: 'Three bricks assembled into a more involved Tier&nbsp;2 target.',
+        bricks: '3 bricks' },
+      { t: 36.867, step: 'Task 4', tier: 'Tier 2', heading: 'Two brick shapes',
+        desc: 'Three bricks spanning two different shapes &mdash; assembly must respect brick shape as well as position.',
+        bricks: '3 bricks &middot; 2 shapes' },
+      { t: 57.10,  step: 'Task 5', tier: 'Tier 3', heading: 'A five-brick build',
+        desc: 'Five bricks across two shapes assembled into a Tier&nbsp;3 structure.',
+        bricks: '5 bricks &middot; 2 shapes' }
+    ];
+
+    var elStep   = document.getElementById('wbm-demo-step');
+    var elTier   = document.getElementById('wbm-demo-tier');
+    var elHead   = document.getElementById('wbm-demo-heading');
+    var elDesc   = document.getElementById('wbm-demo-desc');
+    var elBricks = document.getElementById('wbm-demo-bricks');
+    var dotsWrap = document.getElementById('wbm-demo-dots');
+
+    function seekTo(i) {
+      // nudge slightly past the boundary so we land firmly inside the segment
+      video.currentTime = SEGMENTS[i].t + 0.05;
+      render(i);
+      var p = video.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+
+    var dots = SEGMENTS.map(function (s, i) {
+      var d = document.createElement('button');
+      d.type = 'button';
+      d.className = 'wbm-demo-dot';
+      d.textContent = String(i + 1);
+      d.setAttribute('role', 'tab');
+      d.setAttribute('aria-label', s.step + ' — ' + s.tier + ', ' + s.heading);
+      d.title = s.step + ' · ' + s.tier;
+      d.addEventListener('click', function () { seekTo(i); });
+      dotsWrap.appendChild(d);
+      return d;
+    });
+
+    var current = -1;
+    function render(i) {
+      if (i === current) return;
+      current = i;
+      var s = SEGMENTS[i];
+      elStep.textContent = s.step;
+      elTier.textContent = s.tier;
+      elHead.textContent = s.heading;
+      elDesc.innerHTML = s.desc;
+      elBricks.innerHTML = s.bricks;
+      dots.forEach(function (d, j) {
+        d.classList.toggle('is-active', j === i);
+        d.classList.toggle('is-done', j < i);
+      });
+    }
+
+    function segmentAt(t) {
+      var idx = 0;
+      for (var i = 0; i < SEGMENTS.length; i++) {
+        if (t >= SEGMENTS[i].t) idx = i; else break;
+      }
+      return idx;
+    }
+
+    render(0);
+    video.addEventListener('timeupdate', function () {
+      render(segmentAt(video.currentTime));
+    });
+    video.addEventListener('seeked', function () {
+      render(segmentAt(video.currentTime));
+    });
+
+    // Some browsers block autoplay until visible; nudge it when scrolled into view.
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting && video.paused) {
+            var p = video.play();
+            if (p && p.catch) p.catch(function () {});
+          }
+        });
+      }, { threshold: 0.25 });
+      io.observe(video);
+    }
+  })();
 });

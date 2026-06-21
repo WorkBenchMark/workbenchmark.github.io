@@ -460,3 +460,79 @@ pre { border-radius: 8px; }
 }
 .wbm-faq summary { cursor: pointer; font-weight: 600; }
 .wbm-faq p { margin-top: 0.4rem; margin-bottom: 0; }
+
+/* ---------- demo (real-robot video + synced annotations) ---------- */
+.wbm-demo { gap: 1.5rem; }
+.wbm-demo-frame {
+  width: 280px;
+  max-width: 70vw;
+  margin: 0 auto;
+  border-radius: 18px;
+  padding: 8px;
+  background: #1c1f24;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+.wbm-demo-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  background: #000;
+}
+.wbm-demo-panel { padding: 0.5rem 0.25rem; }
+.wbm-demo-eyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin-bottom: 0.35rem;
+}
+.wbm-demo-eyebrow #wbm-demo-step { color: var(--brand-dark); }
+.wbm-demo-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 0.5rem;
+  color: #1c1f24;
+}
+.wbm-demo-desc {
+  font-size: 1.02rem;
+  color: #4a4a4a;
+  margin-bottom: 0.85rem;
+  min-height: 3.2em;
+}
+.wbm-demo-meta { margin-bottom: 1rem; }
+.wbm-demo-dots { display: flex; gap: 0.5rem; }
+.wbm-demo-dot {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid #d4d9e0;
+  border-radius: 8px;
+  background: #fff;
+  color: #6b7280;
+  font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.wbm-demo-dot:hover { border-color: var(--brand); color: var(--brand-dark); }
+.wbm-demo-dot.is-done {
+  border-color: var(--brand-soft);
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+}
+.wbm-demo-dot.is-active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(11, 105, 199, 0.3);
+}
+.wbm-demo-dot:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+@media screen and (max-width: 768px) {
+  .wbm-demo { gap: 0.75rem; }
+  .wbm-demo-desc { min-height: 0; }
+}
