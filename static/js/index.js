@@ -449,6 +449,181 @@ document.addEventListener('DOMContentLoaded', function () {
   mountTable(METRICS, SUBMISSIONS, document.getElementById('lb-head'), document.getElementById('lb-body'), { defaultSort: 'success' });
   mountTable(RR_METRICS, RR_SUBMISSIONS, document.getElementById('rr-head'), document.getElementById('rr-body'), { sortable: false });
 
+  // ---- simulation results player: tier tabs + annotation panel synced to playback ----
+  (function () {
+    var video = document.getElementById('wbm-sim-video');
+    if (!video) return;
+
+    // One entry per 10-second clip; t = absolute start time in sim_results.mp4.
+    // Clips are ordered: T1 (×2), T2 (×13), T3 (×8), T4 (×4).
+    var SIM_SEGS = [
+      // Tier 1
+      { t: 0,   tier: 1, n: 1,  total: 2,  heading: '2-brick vertical stack',
+        desc: 'Two 4×2 bricks stacked vertically — green base, yellow top.',                                  bricks: '2 bricks',  task: '001' },
+      { t: 10,  tier: 1, n: 2,  total: 2,  heading: '2-brick vertical stack',
+        desc: 'Two 4×2 bricks stacked vertically — both blue.',                                               bricks: '2 bricks',  task: '003' },
+      // Tier 2
+      { t: 20,  tier: 2, n: 1,  total: 13, heading: '3-brick vertical stack',
+        desc: '4×2 base, 2×2 middle, 4×2 top — blue and green.',                                    bricks: '3 bricks',  task: '001' },
+      { t: 30,  tier: 2, n: 2,  total: 13, heading: '3-brick vertical stack',
+        desc: 'Red 4×2 base, 2×2 middle, blue 4×2 top.',                                                 bricks: '3 bricks',  task: '002' },
+      { t: 40,  tier: 2, n: 3,  total: 13, heading: '3-brick vertical stack',
+        desc: 'Yellow 4×2 base, 2×2 middle, red 4×2 top.',                                               bricks: '3 bricks',  task: '003' },
+      { t: 50,  tier: 2, n: 4,  total: 13, heading: '2-brick vertical stack',
+        desc: 'Yellow 4×2 and green 2×2 stacked vertically.',                                                 bricks: '2 bricks',  task: '004' },
+      { t: 60,  tier: 2, n: 5,  total: 13, heading: '3-layer assembly',
+        desc: 'Three bricks across three layers — blue base, green middle, blue top.',                              bricks: '3 bricks',  task: '005' },
+      { t: 70,  tier: 2, n: 6,  total: 13, heading: '3-layer assembly',
+        desc: 'Green, red, and mixed brick sizes across three layers.',                                                  bricks: '3 bricks',  task: '006' },
+      { t: 80,  tier: 2, n: 7,  total: 13, heading: '3-layer assembly',
+        desc: 'Yellow, red, and blue bricks across three layers.',                                                       bricks: '3 bricks',  task: '007' },
+      { t: 90,  tier: 2, n: 8,  total: 13, heading: '3-layer assembly',
+        desc: 'Blue and red bricks in a compact three-layer stack.',                                                     bricks: '3 bricks',  task: '008' },
+      { t: 100, tier: 2, n: 9,  total: 13, heading: '4-brick vertical stack',
+        desc: 'Four bricks across four layers — green, yellow, and blue.',                                          bricks: '4 bricks',  task: '009' },
+      { t: 110, tier: 2, n: 10, total: 13, heading: '3-layer assembly',
+        desc: 'Yellow and blue bricks in a compact three-layer stack.',                                                  bricks: '3 bricks',  task: '010' },
+      { t: 120, tier: 2, n: 11, total: 13, heading: '2-brick vertical stack',
+        desc: 'Blue 4×2 and green 2×2 stacked vertically.',                                                   bricks: '2 bricks',  task: '011' },
+      { t: 130, tier: 2, n: 12, total: 13, heading: '3-brick vertical stack',
+        desc: 'Yellow and red bricks across three layers.',                                                              bricks: '3 bricks',  task: '024' },
+      { t: 140, tier: 2, n: 13, total: 13, heading: '4-layer assembly',
+        desc: 'Four-layer structure with red, blue, and green bricks.',                                                  bricks: '4 bricks',  task: '037' },
+      // Tier 3
+      { t: 150, tier: 3, n: 1,  total: 8,  heading: '5-brick 3D structure',
+        desc: 'Five bricks in a 3-layer layout spanning multiple columns — red and yellow.',                        bricks: '5 bricks',  task: '001' },
+      { t: 160, tier: 3, n: 2,  total: 8,  heading: '7-brick 3D structure',
+        desc: 'Seven bricks across 3 layers and multiple columns — red, yellow, and blue.',                         bricks: '7 bricks',  task: '003' },
+      { t: 170, tier: 3, n: 3,  total: 8,  heading: '8-brick 4-layer assembly',
+        desc: 'Eight bricks spanning four layers with rotation variation — yellow, green, and blue.',               bricks: '8 bricks',  task: '005' },
+      { t: 180, tier: 3, n: 4,  total: 8,  heading: '7-brick 4-layer assembly',
+        desc: 'Seven bricks in four layers with mixed shapes and orientations.',                                         bricks: '7 bricks',  task: '006' },
+      { t: 190, tier: 3, n: 5,  total: 8,  heading: '6-brick 4-layer assembly',
+        desc: 'Six bricks across four layers — green, red, and blue.',                                              bricks: '6 bricks',  task: '007' },
+      { t: 200, tier: 3, n: 6,  total: 8,  heading: '6-brick 3D structure',
+        desc: 'Six bricks in a 3-layer multi-column structure — blue and green.',                                   bricks: '6 bricks',  task: '008' },
+      { t: 210, tier: 3, n: 7,  total: 8,  heading: '5-brick 4-layer assembly',
+        desc: 'Five bricks across four layers — yellow, red, and green.',                                           bricks: '5 bricks',  task: '009' },
+      { t: 220, tier: 3, n: 8,  total: 8,  heading: '7-brick 3D structure',
+        desc: 'Seven bricks across three layers — blue, green, and red.',                                           bricks: '7 bricks',  task: '012' },
+      // Tier 4
+      { t: 230, tier: 4, n: 1,  total: 4,  heading: '6-brick 3-layer assembly',
+        desc: 'Six bricks in a 3-layer interlocking structure — green and red.',                                    bricks: '6 bricks',  task: '002' },
+      { t: 240, tier: 4, n: 2,  total: 4,  heading: '11-brick 4-layer assembly',
+        desc: 'Eleven bricks across four layers — complex interlocking structure with overhangs.',                  bricks: '11 bricks', task: '004' },
+      { t: 250, tier: 4, n: 3,  total: 4,  heading: '8-brick 3D structure',
+        desc: 'Eight bricks in three layers with stability dependencies — blue, yellow, and red.',                  bricks: '8 bricks',  task: '010' },
+      { t: 260, tier: 4, n: 4,  total: 4,  heading: '7-brick assembly',
+        desc: 'Seven bricks with overhanging elements across two layers — blue, yellow, and red.',                  bricks: '7 bricks',  task: '011' }
+    ];
+
+    // Index in SIM_SEGS where each tier starts
+    var TIER_FIRST = { 1: 0, 2: 2, 3: 15, 4: 23 };
+
+    var elBadge  = document.getElementById('wbm-sim-tier-badge');
+    var elStep   = document.getElementById('wbm-sim-step');
+    var elHead   = document.getElementById('wbm-sim-heading');
+    var elDesc   = document.getElementById('wbm-sim-desc');
+    var elBricks = document.getElementById('wbm-sim-bricks');
+    var elTask   = document.getElementById('wbm-sim-task');
+    var dotsWrap = document.getElementById('wbm-sim-dots');
+    var tabItems = document.querySelectorAll('#wbm-sim-tier-tabs li');
+
+    var dots = [];
+    var current = -1;
+
+    function segmentAt(t) {
+      var idx = 0;
+      for (var i = 0; i < SIM_SEGS.length; i++) {
+        if (t >= SIM_SEGS[i].t) idx = i; else break;
+      }
+      return idx;
+    }
+
+    function buildDots(tier) {
+      dotsWrap.innerHTML = '';
+      dots = [];
+      var first = TIER_FIRST[tier];
+      var count = SIM_SEGS[first].total;
+      for (var i = 0; i < count; i++) {
+        (function (localIdx) {
+          var seg = SIM_SEGS[first + localIdx];
+          var d = document.createElement('button');
+          d.type = 'button';
+          d.className = 'wbm-demo-dot';
+          d.textContent = String(localIdx + 1);
+          d.setAttribute('role', 'tab');
+          d.setAttribute('aria-label', 'Tier ' + tier + ' clip ' + (localIdx + 1));
+          d.title = seg.heading;
+          d.addEventListener('click', function () {
+            video.currentTime = seg.t + 0.05;
+            var p = video.play();
+            if (p && p.catch) p.catch(function () {});
+          });
+          dotsWrap.appendChild(d);
+          dots.push(d);
+        })(i);
+      }
+    }
+
+    function render(i) {
+      var s = SIM_SEGS[i];
+      var prevTier = current >= 0 ? SIM_SEGS[current].tier : -1;
+
+      if (s.tier !== prevTier) {
+        buildDots(s.tier);
+        tabItems.forEach(function (li) {
+          li.classList.toggle('is-active', parseInt(li.dataset.simTier, 10) === s.tier);
+        });
+      }
+
+      if (i === current) return;
+      current = i;
+
+      elBadge.textContent  = 'Tier ' + s.tier;
+      elStep.textContent   = 'Clip ' + s.n + ' / ' + s.total;
+      elHead.textContent   = s.heading;
+      elDesc.textContent   = s.desc;
+      elBricks.textContent = s.bricks;
+      elTask.textContent   = 'Task ' + s.task;
+
+      var localIdx = s.n - 1;
+      dots.forEach(function (d, j) {
+        d.classList.toggle('is-active', j === localIdx);
+        d.classList.toggle('is-done',   j < localIdx);
+      });
+    }
+
+    // Tier tab clicks: seek to first clip of that tier
+    tabItems.forEach(function (li) {
+      li.addEventListener('click', function () {
+        var tier = parseInt(li.dataset.simTier, 10);
+        var seg  = SIM_SEGS[TIER_FIRST[tier]];
+        video.currentTime = seg.t + 0.05;
+        var p = video.play();
+        if (p && p.catch) p.catch(function () {});
+      });
+    });
+
+    render(0);
+    buildDots(1);
+
+    video.addEventListener('timeupdate', function () { render(segmentAt(video.currentTime)); });
+    video.addEventListener('seeked',     function () { render(segmentAt(video.currentTime)); });
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting && video.paused) {
+            var p = video.play();
+            if (p && p.catch) p.catch(function () {});
+          }
+        });
+      }, { threshold: 0.25 });
+      io.observe(video);
+    }
+  })();
+
   // ---- demo video: annotation panel synced to playback ----
   (function () {
     var video = document.getElementById('wbm-demo-video');

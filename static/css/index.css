@@ -452,6 +452,32 @@ pre { border-radius: 8px; }
 .wbm-faq summary { cursor: pointer; font-weight: 600; }
 .wbm-faq p { margin-top: 0.4rem; margin-bottom: 0; }
 
+/* ---------- simulation results player ---------- */
+.wbm-sim-tabs { margin-bottom: 0 !important; }
+.wbm-sim-tabs ul { flex-wrap: wrap; }
+.wbm-sim-tabs li[data-sim-tier] { cursor: pointer; }
+.wbm-sim-cols { margin-top: 0 !important; }
+
+.wbm-sim-frame {
+  width: 420px;
+  max-width: 90vw;
+  margin: 0 auto;
+  border-radius: 12px;
+  padding: 8px;
+  background: #1c1f24;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+.wbm-sim-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  background: #000;
+}
+@media (max-width: 768px) {
+  .wbm-sim-frame { width: 100%; }
+}
+
 /* ---------- demo (real-robot video + synced annotations) ---------- */
 .wbm-demo { gap: 1.5rem; }
 .wbm-demo-frame {

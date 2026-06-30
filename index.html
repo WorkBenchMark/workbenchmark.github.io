@@ -575,16 +575,47 @@
       </figcaption>
     </figure>
 
-    <!-- ===== Results video =====
-         TODO: drop qualitative result clips at static/videos/results.mp4. -->
-    <figure class="image wbm-teaser mt-5">
-      <video poster="static/images/final_product.png" controls muted loop playsinline>
-        <source src="static/videos/results.mp4" type="video/mp4">
-      </video>
-      <figcaption class="is-size-7 has-text-grey mt-2 has-text-centered">
-        Qualitative execution results (video coming soon).
-      </figcaption>
-    </figure>
+    <!-- ===== Simulation results player ===== -->
+    <div class="wbm-sim mt-5" id="wbm-sim">
+      <div class="tabs is-centered is-small mb-0 wbm-sim-tabs" id="wbm-sim-tier-tabs">
+        <ul>
+          <li class="is-active" data-sim-tier="1"><a>Tier&nbsp;1 &mdash; Two-brick stacking</a></li>
+          <li data-sim-tier="2"><a>Tier&nbsp;2 &mdash; Multi-brick stacking</a></li>
+          <li data-sim-tier="3"><a>Tier&nbsp;3 &mdash; 3D shape assembly</a></li>
+          <li data-sim-tier="4"><a>Tier&nbsp;4 &mdash; Complex assembly</a></li>
+        </ul>
+      </div>
+
+      <div class="columns is-vcentered wbm-demo wbm-sim-cols mt-0">
+        <div class="column is-narrow">
+          <div class="wbm-sim-frame">
+            <video id="wbm-sim-video" class="wbm-sim-video" playsinline muted autoplay controls
+                   preload="metadata" poster="static/images/tier1.png">
+              <source src="static/videos/sim_results.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+        <div class="column">
+          <div class="wbm-demo-panel">
+            <p class="wbm-demo-eyebrow">
+              Simulation &middot; <span class="tag is-link" id="wbm-sim-tier-badge">Tier 1</span>
+              &nbsp;<span id="wbm-sim-step">Clip 1 / 2</span>
+            </p>
+            <h3 class="wbm-demo-title" id="wbm-sim-heading">2-brick vertical stack</h3>
+            <p class="wbm-demo-desc" id="wbm-sim-desc">Two 4&times;2 bricks stacked vertically &mdash; green base, yellow top.</p>
+            <p class="wbm-demo-meta">
+              <span class="tag is-light" id="wbm-sim-bricks">2 bricks</span>
+              <span class="tag is-light" id="wbm-sim-task">Task&nbsp;001</span>
+            </p>
+            <div class="wbm-demo-dots" id="wbm-sim-dots" role="tablist" aria-label="Jump to a simulation clip"></div>
+            <p class="wbm-demo-hint is-size-7 has-text-grey mt-4">
+              <span class="icon"><i class="fas fa-circle-info"></i></span>
+              Click a number to jump to that clip, or use the tier tabs above.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
